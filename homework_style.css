@@ -1,0 +1,69 @@
+/* General style */
+body {
+    font-family: 'Arial', sans-serif;
+    margin: 0;
+    padding: 0;
+    background: linear-gradient(135deg, #1E90FF, #FF6347); /* Gradient */
+    color: #000;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100vh;
+}
+
+/* Top-right tab */
+.top-right-tab {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+}
+
+#code-input {
+    padding: 5px;
+    font-size: 14px;
+    border: 1px solid black;
+    border-radius: 4px;
+}
+
+/* Homework timetable style */
+#homework-timetable {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-top: 20px;
+    background-color: #000; /* Black background */
+    padding: 20px;
+    border-radius: 10px;
+}
+
+table {
+    width: 90%; /* Full-width table */
+    max-width: 1200px;
+    border-collapse: collapse;
+    background-color: #000; /* Black background */
+    color: white;
+}
+
+th, td {
+    border: 1px solid white; /* White borders */
+    padding: 12px;
+    text-align: center;
+}
+
+thead {
+    background-color: #333; /* Darker for the header */
+}
+
+td input {
+    width: 100%;
+    padding: 5px;
+    text-align: center;
+    background-color: #333;
+    color: white;
+    border: none;
+}
+
+td input:disabled {
+    background-color: #666; /* Grey background when disabled */
+}
