@@ -81,6 +81,14 @@ function loadDataFromFirebase(dateIndex, subjectIndex, input) {
         }
     });
 }
+firebase.database().ref(".info/connected").on("value", function(snapshot) {
+  if (snapshot.val() === true) {
+    console.log("Connecté à Firebase");
+  } else {
+    console.log("Déconnecté de Firebase");
+  }
+});
+
 
 // Activation de la modification avec un code spécifique
 document.getElementById('code-input').addEventListener('input', function() {
