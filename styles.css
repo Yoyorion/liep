@@ -113,7 +113,7 @@ footer {
     position: fixed;
     right: 0;
     top: 0;
-    width: fit-content;
+    width: 250px; /* Largeur fixe pour la bulle */
     height: 90%;
     background-color: rgba(0, 0, 0, 0.8);
     border-radius: 15px 0 0 15px;
@@ -147,12 +147,12 @@ footer {
     background-color: #cccccc;
 }
 
-/* Bulle Devoirs (mise à gauche et même taille que la bulle programme) */
+/* Bulle Devoirs (mise à gauche et même largeur que la bulle programme) */
 .homework-bubble {
     position: fixed;
     left: 0; /* Bulle à gauche */
     top: 0;
-    width: fit-content;
+    width: 250px; /* Même largeur que la bulle programme */
     height: 90%; /* Même hauteur que la bulle programme */
     background-color: rgba(0, 0, 0, 0.8);
     border-radius: 0 15px 15px 0;
