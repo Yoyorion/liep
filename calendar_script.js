@@ -1,7 +1,7 @@
 document.addEventListener('DOMContentLoaded', function () {
     // Initialisation de Supabase
     const supabaseUrl = 'https://znwzdkgshtrickigthgd.supabase.co';  // Remplace par ton URL Supabase
-    const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inpud3pka2dzaHRyaWNraWd0aGdkIiwicm9sZSI6ImFub24iLCJpYXQiOjE3MjY4MjQyMzcsImV4cCI6MjA0MjQwMDIzN30.qGSSUfV7qjC0PUL3t_XVR3dXg6s5kRg0zwtQ2J1Gd5M';  // Remplace par ton anonpublic key
+    const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inpud3pka2dzaHRyaWNraWd0aGdkIiwicm9zZSI6ImFub24iLCJpYXQiOjE3MjY4MjQyMzcsImV4cCI6MjA0MjQwMDIzN30.qGSSUfV7qjC0PUL3t_XVR3dXg6s5kRg0zwtQ2J1Gd5M';  // Remplace par ton anonpublic key
     const supabase = window.supabase.createClient(supabaseUrl, supabaseKey);
 
     // Récupérer et afficher l'emploi du temps depuis la base de données
@@ -72,12 +72,19 @@ document.addEventListener('DOMContentLoaded', function () {
         }
     });
 
-    // Écouter la touche "d" pour effacer le contenu des cases
-    document.addEventListener('keydown', function(event) {
+    // Écouter la touche "d" pour effacer le contenu des cases et enregistrer
+    document.addEventListener('keydown', async function(event) {
         if (event.key === 'd') {
             const inputs = document.querySelectorAll('td input:not(:disabled)');  // Sélectionner uniquement les inputs modifiables
-            inputs.forEach(input => {
-                input.value = '';  // Vider le contenu
+            inputs.forEach(async input => {
+                const hour = input.getAttribute('data-hour');
+                const day = input.getAttribute('data-day');
+
+                // Vider le contenu de l'input
+                input.value = '';  // Vider le champ
+
+                // Enregistrer le changement dans la base de données
+                await updateTimetable(hour, day, null);  // Enregistre null pour l'activité
             });
         }
     });
