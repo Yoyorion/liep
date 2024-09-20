@@ -1,17 +1,8 @@
-// Configuration Firebase
-const firebaseConfig = {
-    apiKey: "AIzaSyAeYwgSXpUJXdq5nL8bmANj5w4gJr03Aj8",
-    authDomain: "nd5-2dc24.firebaseapp.com",
-    projectId: "nd5-2dc24",
-    storageBucket: "nd5-2dc24.appspot.com",
-    messagingSenderId: "482770675959",
-    appId: "1:482770675959:web:3307583fc3394bab7e0bf2",
-    measurementId: "G-VX8G913VW3"
-};
-
-// Initialisation de Firebase
-firebase.initializeApp(firebaseConfig);
-const database = firebase.database();
+// Initialisation de Supabase
+const { createClient } = supabase;
+const supabaseUrl = 'https://znwzdkgshtrickigthgd.supabase.co';
+const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inpud3pka2dzaHRyaWNraWd0aGdkIiwicm9sZSI6ImFub24iLCJpYXQiOjE3MjY4MjQyMzcsImV4cCI6MjA0MjQwMDIzN30.qGSSUfV7qjC0PUL3t_XVR3dXg6s5kRg0zwtQ2J1Gd5M';
+const supabase = createClient(supabaseUrl, supabaseKey);
 
 // Fonction pour générer les dates du jour jusqu'à la fin du mois
 function generateDatesUntilEndOfMonth() {
@@ -32,9 +23,19 @@ function generateDatesUntilEndOfMonth() {
 }
 
 // Fonction pour générer les lignes du tableau avec les matières
-function generateTableRows() {
+async function generateTableRows() {
     const tableBody = document.getElementById('table-body');
     const dates = generateDatesUntilEndOfMonth();
+
+    // Récupérer les données depuis Supabase
+    const { data: homework, error } = await supabase
+        .from('homework')
+        .select('*');
+
+    if (error) {
+        console.error('Erreur lors de la récupération des données:', error);
+        return;
+    }
 
     dates.forEach((date, dateIndex) => {
         const row = document.createElement('tr');
@@ -52,12 +53,15 @@ function generateTableRows() {
             input.type = 'text';
             input.disabled = true; // Désactivé par défaut
 
-            // Charger les données depuis Firebase
-            loadDataFromFirebase(dateIndex, subjectIndex, input);
+            // Charger les données depuis Supabase si disponibles
+            const homeworkEntry = homework.find(entry => entry.date_index === dateIndex && entry.subject_index === subjectIndex);
+            if (homeworkEntry) {
+                input.value = homeworkEntry.homework;
+            }
 
-            // Sauvegarde dans Firebase lorsque l'utilisateur modifie une valeur
-            input.addEventListener('change', function () {
-                saveToDatabase(dateIndex, subjectIndex, input.value);
+            // Sauvegarder dans Supabase lorsqu'une valeur est modifiée
+            input.addEventListener('change', async function () {
+                await saveToDatabase(dateIndex, subjectIndex, input.value);
             });
 
             cell.appendChild(input);
@@ -68,27 +72,18 @@ function generateTableRows() {
     });
 }
 
-// Fonction pour sauvegarder les données dans Firebase
-function saveToDatabase(dateIndex, subjectIndex, value) {
-    firebase.database().ref('homework/' + dateIndex + '/' + subjectIndex).set(value);
-}
+// Fonction pour sauvegarder les données dans Supabase
+async function saveToDatabase(dateIndex, subjectIndex, homework) {
+    const { data, error } = await supabase
+        .from('homework')
+        .upsert({ date_index: dateIndex, subject_index: subjectIndex, homework });
 
-// Fonction pour charger les données depuis Firebase
-function loadDataFromFirebase(dateIndex, subjectIndex, input) {
-    firebase.database().ref('homework/' + dateIndex + '/' + subjectIndex).once('value').then((snapshot) => {
-        if (snapshot.exists()) {
-            input.value = snapshot.val();
-        }
-    });
+    if (error) {
+        console.error('Erreur lors de la sauvegarde des données:', error);
+    } else {
+        console.log('Données sauvegardées avec succès');
+    }
 }
-firebase.database().ref(".info/connected").on("value", function(snapshot) {
-  if (snapshot.val() === true) {
-    console.log("Connecté à Firebase");
-  } else {
-    console.log("Déconnecté de Firebase");
-  }
-});
-
 
 // Activation de la modification avec un code spécifique
 document.getElementById('code-input').addEventListener('input', function() {
