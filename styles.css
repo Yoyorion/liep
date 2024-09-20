@@ -11,16 +11,16 @@ body {
     justify-content: center;
     text-align: center;
     min-height: 100vh;
-    position: relative; /* For the bubble to be placed properly */
+    position: relative; /* Pour les bulles */
 }
 
-/* Bulle "Emploi du temps" à droite */
+/* Bulle "Emploi du temps" */
 .program-bubble {
     position: fixed;
     right: 0;
     top: 0;
-    width: 200px; /* Largeur fixe pour correspondre aux deux bulles */
-    height: 90%; /* Même hauteur pour l'emploi du temps */
+    width: 200px; /* Largeur fixe */
+    height: 90%; /* Hauteur fixe */
     background-color: rgba(0, 0, 0, 0.8);
     border-radius: 15px 0 0 15px;
     display: flex;
@@ -34,7 +34,7 @@ body {
 .program-bubble p {
     font-size: 1.5em;
     color: #ffffff;
-    margin-bottom: 20px; /* Espace entre le texte et le bouton */
+    margin-bottom: 20px;
 }
 
 .program-button {
@@ -53,27 +53,27 @@ body {
     background-color: #cccccc;
 }
 
-/* Bulle "Devoirs" à gauche */
+/* Bulle "Devoirs" */
 .homework-bubble {
     position: fixed;
     left: 0;
     top: 0;
-    width: 200px; /* Largeur fixe identique à celle de la bulle programme */
-    height: 90%; /* Même hauteur que la bulle d'emploi du temps */
+    width: 200px; /* Largeur fixe */
+    height: 90%; /* Hauteur fixe */
     background-color: rgba(0, 0, 0, 0.8);
-    border-radius: 0 15px 15px 0; /* Coins arrondis à droite */
+    border-radius: 0 15px 15px 0;
     display: flex;
     flex-direction: column;
     justify-content: center;
     align-items: center;
     padding: 20px;
-    box-shadow: 4px 0px 8px rgba(0, 0, 0, 0.5); /* Ombre sur le côté droit */
+    box-shadow: 4px 0px 8px rgba(0, 0, 0, 0.5);
 }
 
 .homework-bubble p {
     font-size: 1.5em;
     color: #ffffff;
-    margin-bottom: 20px; /* Espace entre le texte et le bouton */
+    margin-bottom: 20px;
 }
 
 .homework-button {
@@ -184,4 +184,81 @@ footer {
     width: 100%;
     color: #ffffff;
     box-shadow: 0px -4px 8px rgba(0, 0, 0, 0.2);
+}
+
+/* Styles pour les grands écrans (ordinateurs) */
+@media only screen and (min-width: 1024px) {
+    /* Conserve les styles actuels pour ordinateur */
+}
+
+/* Styles pour les tablettes */
+@media only screen and (min-width: 768px) and (max-width: 1024px) {
+    body {
+        font-size: 16px;
+    }
+    
+    .presentation {
+        padding: 15px;
+        margin: 10px;
+    }
+
+    .image-chien {
+        width: 180px;
+        height: 180px;
+    }
+}
+
+/* Styles pour les téléphones */
+@media only screen and (max-width: 767px) {
+    body {
+        font-size: 14px;
+        padding: 5px;
+        margin: 0;
+    }
+
+    header h1 {
+        font-size: 2em; /* Réduis la taille du titre */
+        margin: 10px 0;
+    }
+
+    .presentation {
+        padding: 10px;
+        margin: 5px;
+        font-size: 1em; /* Réduire la taille de la police pour mobile */
+    }
+
+    .image-chien {
+        width: 100px; /* Réduire la taille de l'image du chien */
+        height: 100px;
+        margin: 0 auto; /* Centrer l'image sur mobile */
+    }
+
+    .formulaire {
+        padding: 10px;
+        margin: 10px 0;
+    }
+
+    textarea {
+        width: 100%; /* Assure que le textarea prenne toute la largeur disponible */
+    }
+
+    button {
+        width: 100%; /* Bouton sur toute la largeur pour plus d'accessibilité */
+        font-size: 1em; /* Réduire légèrement la taille du texte sur mobile */
+    }
+
+    /* Bulles sur les côtés (Emploi du temps, Devoirs) */
+    .program-bubble, .homework-bubble {
+        width: 150px; /* Réduire la taille des bulles sur mobile */
+        font-size: 0.9em; /* Réduire la taille du texte */
+    }
+
+    .program-button, .homework-button {
+        padding: 8px 12px; /* Réduire le padding des boutons dans les bulles */
+    }
+
+    footer {
+        font-size: 0.9em;
+        padding: 10px;
+    }
 }
