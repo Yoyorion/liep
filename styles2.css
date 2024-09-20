@@ -1,10 +1,10 @@
-/* Style général pour la page du programme */
+/* Style général */
 body {
     font-family: 'Arial', sans-serif;
     margin: 0;
     padding: 0;
-    background-color: #f4f4f4;
-    color: #333;
+    background: linear-gradient(135deg, #1E90FF, #FF6347); /* Dégradé bleu vers rouge */
+    color: #ffffff;
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -15,65 +15,32 @@ body {
 
 /* Style de l'en-tête */
 header {
-    background-color: rgba(0, 0, 0, 0.9);
+    background-color: rgba(0, 0, 0, 0.8);
     width: 100%;
     padding: 20px;
     box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
 }
 
 h1 {
-    font-size: 3em; /* Taille du titre sur ordinateur */
+    font-size: 2.5em;
     margin: 0;
-    color: #ffffff;
-    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
 }
 
-/* Section Programme */
-.program-section {
-    margin: 20px;
-    padding: 20px;
-    background-color: rgba(255, 255, 255, 0.8);
-    border-radius: 10px;
-    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
-    max-width: 800px; /* Limite la largeur pour les grands écrans */
-}
-
-ul {
-    list-style-type: none;
-    padding: 0;
-}
-
-ul li {
-    font-size: 1.5em;
-    margin-bottom: 15px;
-}
-
-footer {
+/* Style des drapeaux */
+.flags {
+    display: flex;
+    justify-content: center;
     margin-top: 30px;
-    padding: 20px;
-    background-color: rgba(0, 0, 0, 0.9);
-    width: 100%;
-    color: #ffffff;
-    box-shadow: 0px -4px 8px rgba(0, 0, 0, 0.2);
 }
 
-/* Media Queries pour mobile */
-@media (max-width: 768px) {
-    h1 {
-        font-size: 2em; /* Réduire la taille du titre sur mobile */
-    }
+.flag {
+    width: 150px;
+    height: auto;
+    margin: 0 20px;
+    cursor: pointer;
+    transition: transform 0.3s;
+}
 
-    .program-section {
-        padding: 15px;
-        margin: 10px;
-        max-width: 100%; /* Utilise toute la largeur sur mobile */
-    }
-
-    ul li {
-        font-size: 1.2em; /* Réduire la taille des éléments de la liste */
-    }
-
-    footer {
-        padding: 10px;
-    }
+.flag:hover {
+    transform: scale(1.1); /* Agrandissement lors du survol */
 }
