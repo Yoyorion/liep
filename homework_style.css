@@ -1,0 +1,94 @@
+/* Style général */
+body {
+    font-family: 'Arial', sans-serif;
+    margin: 0;
+    padding: 20px;
+    background: linear-gradient(135deg, #1E90FF, #FF6347); /* Dégradé bleu vers rouge */
+    color: #333;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    min-height: 100vh;
+}
+
+h2 {
+    margin-bottom: 20px;
+    font-size: 2em;
+    color: #fff;
+}
+
+/* Container pour le tableau pour gérer le défilement */
+#homework {
+    width: 100%;
+    max-width: 1200px;
+    overflow-x: auto; /* Défilement horizontal si nécessaire */
+    max-height: 80vh; /* Limiter la hauteur pour que tout soit visible sur les petits écrans */
+}
+
+/* Style du tableau pour une meilleure visibilité et mise en forme */
+table {
+    width: 100%;
+    border-collapse: collapse;
+    table-layout: fixed; /* Colonnes à largeur fixe pour éviter les chevauchements */
+    margin-top: 20px;
+    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+    overflow-y: auto; /* Permettre le défilement vertical */
+}
+
+/* Fixer la largeur de la colonne 'Date' */
+th:first-child, td:first-child {
+    width: 100px; /* Ajuste cette valeur pour la largeur parfaite de la colonne Date */
+}
+
+/* Largeur fixe pour les autres colonnes */
+th:not(:first-child), td:not(:first-child) {
+    width: 150px; /* Ajuste cette largeur selon la taille du contenu des colonnes */
+}
+
+/* Style des cellules et des en-têtes */
+th, td {
+    border: 1px solid #ccc;
+    padding: 15px;
+    text-align: center;
+    font-size: 1.2em;
+    white-space: normal; /* Le texte s'ajuste à la taille de la cellule */
+    word-wrap: break-word; /* Permettre le saut de ligne dans les cellules si nécessaire */
+    min-height: 50px; /* Fixer une hauteur minimale pour chaque cellule */
+    height: auto; /* Autoriser la hauteur variable en fonction du contenu */
+}
+
+/* Style de l'en-tête avec texte qui reste sur une seule ligne */
+th {
+    background-color: rgba(0, 0, 0, 0.8);
+    color: #fff;
+    text-transform: uppercase;
+    text-align: center;
+}
+
+/* Les inputs à l'intérieur des cellules sont redimensionnables pour occuper tout l'espace disponible */
+td input {
+    width: 100%;
+    padding: 8px;
+    border: none;
+    background-color: #f0f0f0;
+    font-size: 1em;
+    text-align: center;
+    border-radius: 4px;
+    box-sizing: border-box; /* Inclure padding et bordure dans les dimensions */
+}
+
+td input:disabled {
+    background-color: #e0e0e0;
+    color: #777;
+}
+
+/* Suppression de display:block pour garder le tableau intact */
+tbody {
+    overflow-y: auto; /* Ajout de défilement pour le corps */
+    width: 100%;
+}
+
+thead {
+    width: 100%;
+}
