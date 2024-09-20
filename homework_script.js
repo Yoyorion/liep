@@ -1,99 +1,99 @@
-// Initialisation de Supabase
-const { createClient } = supabase;
-const supabaseUrl = 'https://znwzdkgshtrickigthgd.supabase.co';
-const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inpud3pka2dzaHRyaWNraWNra2d0aGdkIiwicm9sZSI6ImFub24iLCJpYXQiOjE3MjY4MjQyMzcsImV4cCI6MjA0MjQwMDIzN30.qGSSUfV7qjC0PUL3t_XVR3dXg6s5kRg0zwtQ2J1Gd5M';
-const supabase = createClient(supabaseUrl, supabaseKey);
-
-// Fonction pour générer les dates du jour jusqu'à la fin du mois
-function generateDatesUntilEndOfMonth() {
-    const today = new Date();
-    const lastDayOfMonth = new Date(today.getFullYear(), today.getMonth() + 1, 0);
-    const dates = [];
-
-    let currentDate = new Date(today);
-
-    // Générer les dates jusqu'à la fin du mois
-    while (currentDate <= lastDayOfMonth) {
-        const formattedDate = currentDate.toLocaleDateString('fr-FR', { day: '2-digit', month: '2-digit' });
-        dates.push(formattedDate);
-        currentDate.setDate(currentDate.getDate() + 1);
-    }
-
-    return dates;
-}
-
-// Fonction pour générer les lignes du tableau avec les matières
-async function generateTableRows() {
+// Fonction pour générer les 31 lignes de devoirs avec les dates à partir d'aujourd'hui
+function generateHomeworkRows() {
     const tableBody = document.getElementById('table-body');
-    const dates = generateDatesUntilEndOfMonth();
+    const today = new Date();
 
-    // Récupérer les données depuis Supabase
-    const { data: homework, error } = await supabase
-        .from('homework')
-        .select('*');
+    // Supprimer les anciennes lignes s'il y en a
+    tableBody.innerHTML = '';
 
-    if (error) {
-        console.error('Erreur lors de la récupération des données:', error);
-        return;
-    }
-
-    dates.forEach((date, dateIndex) => {
+    // Boucle pour générer 31 jours
+    for (let i = 0; i < 31; i++) {
         const row = document.createElement('tr');
+        
+        // Calculer la date du jour (au format JJ/MM)
+        const currentDate = new Date();
+        currentDate.setDate(today.getDate() + i); // Ajouter des jours à la date d'aujourd'hui
+        const formattedDate = ("0" + currentDate.getDate()).slice(-2) + "/" + ("0" + (currentDate.getMonth() + 1)).slice(-2);
 
-        // Création de la cellule pour la date
+        // Première colonne: la date
         const dateCell = document.createElement('td');
-        dateCell.textContent = date;
+        dateCell.textContent = formattedDate;
         row.appendChild(dateCell);
 
-        // Création des cellules pour chaque matière
+        // Colonnes pour chaque matière
         const subjects = ['Français', 'Espagnol', 'Littérature', 'Histoire-Géo', 'Mathématiques', 'SVT', 'Physique-Chimie', 'Techno', 'SES', 'EMC'];
-        subjects.forEach((subject, subjectIndex) => {
+        subjects.forEach(subject => {
             const cell = document.createElement('td');
             const input = document.createElement('input');
             input.type = 'text';
-            input.disabled = true; // Désactivé par défaut
-
-            // Charger les données depuis Supabase si disponibles
-            const homeworkEntry = homework.find(entry => entry.date_index === dateIndex && entry.subject_index === subjectIndex);
-            if (homeworkEntry) {
-                input.value = homeworkEntry.homework;
-            }
-
-            // Sauvegarder dans Supabase lorsqu'une valeur est modifiée
-            input.addEventListener('change', async function () {
-                await saveToDatabase(dateIndex, subjectIndex, input.value);
-            });
-
+            input.disabled = true; // Les champs sont désactivés par défaut
             cell.appendChild(input);
             row.appendChild(cell);
         });
 
+        // Ajouter la ligne au tableau
         tableBody.appendChild(row);
-    });
-}
-
-// Fonction pour sauvegarder les données dans Supabase
-async function saveToDatabase(dateIndex, subjectIndex, homework) {
-    const { data, error } = await supabase
-        .from('homework')
-        .upsert({ date_index: dateIndex, subject_index: subjectIndex, homework });
-
-    if (error) {
-        console.error('Erreur lors de la sauvegarde des données:', error);
-    } else {
-        console.log('Données sauvegardées avec succès');
     }
 }
 
-// Activation de la modification avec un code spécifique
-document.getElementById('code-input').addEventListener('input', function() {
-    if (this.value === "codecodecode") {
+// Fonction pour permettre la modification du tableau si le bon code est entré
+document.getElementById('code-input').addEventListener('input', function () {
+    if (this.value === 'codecodecode') {
         const inputs = document.querySelectorAll('td input');
-        inputs.forEach(input => input.disabled = false);
-        this.value = ""; // Effacer le champ après l'activation
-        this.placeholder = "Modification activée";
+        inputs.forEach(input => input.disabled = false); // Activer les champs pour modification
+        this.value = ''; // Effacer le code après validation
+        this.placeholder = 'Modification activée';
     }
 });
 
-// Générer les lignes du tableau au chargement de la page
-window.onload = generateTableRows;
+// Fonction pour mettre à jour le tableau chaque jour
+function updateHomeworkTable() {
+    const today = new Date();
+    const firstRowDate = new Date();
+    firstRowDate.setDate(today.getDate() - 1); // Date du jour d'hier
+
+    // Vérifier si la première ligne correspond à hier
+    const firstRow = document.getElementById('table-body').firstChild;
+    if (firstRow) {
+        const dateText = firstRow.firstChild.textContent;
+        const [day, month] = dateText.split('/');
+        const firstRowDateFormatted = ("0" + firstRowDate.getDate()).slice(-2) + "/" + ("0" + (firstRowDate.getMonth() + 1)).slice(-2);
+
+        // Si la première ligne correspond à la date d'hier, on la supprime et on ajoute une nouvelle ligne
+        if (dateText === firstRowDateFormatted) {
+            firstRow.remove();
+
+            // Ajouter une nouvelle ligne pour le 32ème jour
+            const lastRowDate = new Date();
+            lastRowDate.setDate(today.getDate() + 30); // La nouvelle date sera 30 jours après aujourd'hui
+            const newFormattedDate = ("0" + lastRowDate.getDate()).slice(-2) + "/" + ("0" + (lastRowDate.getMonth() + 1)).slice(-2);
+
+            const row = document.createElement('tr');
+
+            // Première colonne: la nouvelle date
+            const dateCell = document.createElement('td');
+            dateCell.textContent = newFormattedDate;
+            row.appendChild(dateCell);
+
+            // Colonnes pour les matières
+            const subjects = ['Français', 'Espagnol', 'Littérature', 'Histoire-Géo', 'Mathématiques', 'SVT', 'Physique-Chimie', 'Techno', 'SES', 'EMC'];
+            subjects.forEach(subject => {
+                const cell = document.createElement('td');
+                const input = document.createElement('input');
+                input.type = 'text';
+                input.disabled = true; // Désactivé par défaut
+                cell.appendChild(input);
+                row.appendChild(cell);
+            });
+
+            // Ajouter la nouvelle ligne à la fin du tableau
+            document.getElementById('table-body').appendChild(row);
+        }
+    }
+}
+
+// Appeler la fonction pour générer les 31 lignes au chargement de la page
+window.onload = function () {
+    generateHomeworkRows();
+    updateHomeworkTable();
+};
