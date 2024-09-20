@@ -9,55 +9,53 @@ const firebaseConfig = {
     measurementId: "G-VX8G913VW3"
 };
 
-// Initialize Firebase
+// Initialisation de Firebase
 firebase.initializeApp(firebaseConfig);
 const database = firebase.database();
 
-// Function to generate dates from today until the end of the current month
+// Fonction pour générer les dates du jour jusqu'à la fin du mois
 function generateDatesUntilEndOfMonth() {
     const today = new Date();
-    const lastDayOfMonth = new Date(today.getFullYear(), today.getMonth() + 1, 0); // Last day of current month
+    const lastDayOfMonth = new Date(today.getFullYear(), today.getMonth() + 1, 0);
     const dates = [];
 
-    let currentDate = new Date(today); // Create a new Date object to avoid modifying 'today'
+    let currentDate = new Date(today);
 
-    // Generate dates until the end of the month
+    // Générer les dates jusqu'à la fin du mois
     while (currentDate <= lastDayOfMonth) {
         const formattedDate = currentDate.toLocaleDateString('fr-FR', { day: '2-digit', month: '2-digit' });
         dates.push(formattedDate);
-
-        // Move to the next day
         currentDate.setDate(currentDate.getDate() + 1);
     }
 
     return dates;
 }
 
-// Function to generate the table rows with dates and subjects
+// Fonction pour générer les lignes du tableau avec les matières
 function generateTableRows() {
     const tableBody = document.getElementById('table-body');
-    const dates = generateDatesUntilEndOfMonth(); // Generate dates for the current month
+    const dates = generateDatesUntilEndOfMonth();
 
     dates.forEach((date, dateIndex) => {
         const row = document.createElement('tr');
 
-        // Create the date cell
+        // Création de la cellule pour la date
         const dateCell = document.createElement('td');
         dateCell.textContent = date;
         row.appendChild(dateCell);
 
-        // Create 10 cells for subjects with input fields
+        // Création des cellules pour chaque matière
         const subjects = ['Français', 'Espagnol', 'Littérature', 'Histoire-Géo', 'Mathématiques', 'SVT', 'Physique-Chimie', 'Techno', 'SES', 'EMC'];
         subjects.forEach((subject, subjectIndex) => {
             const cell = document.createElement('td');
             const input = document.createElement('input');
             input.type = 'text';
-            input.disabled = true; // Disabled by default
+            input.disabled = true; // Désactivé par défaut
 
-            // Load data from Firebase
+            // Charger les données depuis Firebase
             loadDataFromFirebase(dateIndex, subjectIndex, input);
 
-            // When the input changes, save to Firebase
+            // Sauvegarde dans Firebase lorsque l'utilisateur modifie une valeur
             input.addEventListener('change', function () {
                 saveToDatabase(dateIndex, subjectIndex, input.value);
             });
@@ -70,12 +68,12 @@ function generateTableRows() {
     });
 }
 
-// Function to save data to Firebase
+// Fonction pour sauvegarder les données dans Firebase
 function saveToDatabase(dateIndex, subjectIndex, value) {
     firebase.database().ref('homework/' + dateIndex + '/' + subjectIndex).set(value);
 }
 
-// Function to load data from Firebase
+// Fonction pour charger les données depuis Firebase
 function loadDataFromFirebase(dateIndex, subjectIndex, input) {
     firebase.database().ref('homework/' + dateIndex + '/' + subjectIndex).once('value').then((snapshot) => {
         if (snapshot.exists()) {
@@ -84,15 +82,15 @@ function loadDataFromFirebase(dateIndex, subjectIndex, input) {
     });
 }
 
-// Enable editing when the correct code is entered
+// Activation de la modification avec un code spécifique
 document.getElementById('code-input').addEventListener('input', function() {
     if (this.value === "codecodecode") {
         const inputs = document.querySelectorAll('td input');
         inputs.forEach(input => input.disabled = false);
-        this.value = ""; // Clear the input field
+        this.value = ""; // Effacer le champ après l'activation
         this.placeholder = "Modification activée";
     }
 });
 
-// Generate the table when the page loads
+// Générer les lignes du tableau au chargement de la page
 window.onload = generateTableRows;
