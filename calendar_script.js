@@ -9,76 +9,72 @@ const firebaseConfig = {
     measurementId: "G-VX8G913VW3"
 };
 
-// Initialize Firebase
-const app = firebase.initializeApp(firebaseConfig);
+// Initialisation de Firebase
+firebase.initializeApp(firebaseConfig);
 const database = firebase.database();
 
-// Generate the timetable
-const timetableBody = document.getElementById("calendar-body");
-const startHour = 8;
-const endHour = 18;
+// Fonction pour générer les lignes du tableau pour l'emploi du temps
+function generateTimetableRows() {
+    const tableBody = document.getElementById('calendar-body');
+    const days = ['Lundi', 'Mardi', 'Mercredi', 'Jeudi', 'Vendredi'];
+    const startHour = 8;
+    const endHour = 18;
 
-for (let hour = startHour; hour < endHour; hour++) {
-    const row = document.createElement("tr");
+    // Générer les heures (lignes)
+    for (let hour = startHour; hour <= endHour; hour++) {
+        const row = document.createElement('tr');
 
-    // First cell for the time (e.g., 8:00, 9:00, ...)
-    const timeCell = document.createElement("td");
-    timeCell.textContent = `${hour}:00`;
-    row.appendChild(timeCell);
+        // Colonne pour l'heure
+        const hourCell = document.createElement('td');
+        hourCell.textContent = hour + ':00'; // Affiche l'heure
+        row.appendChild(hourCell);
 
-    // Generate 5 cells for each day (Monday to Friday)
-    for (let day = 0; day < 5; day++) {
-        const dayCell = document.createElement("td");
-        const input = document.createElement("input");
-        input.type = "text";
-        input.maxLength = 3;
-        input.disabled = true; // Disabled by default
+        // Colonnes pour chaque jour
+        for (let i = 0; i < days.length; i++) {
+            const cell = document.createElement('td');
+            const input = document.createElement('input');
+            input.type = 'text';
+            input.disabled = true; // Désactivé par défaut
 
-        // When the input changes, save to Firebase
-        input.addEventListener('change', function() {
-            saveToDatabase(hour, day, input.value);
-        });
+            // Charger les données depuis Firebase
+            loadDataFromFirebase(hour, i, input);
 
-        dayCell.appendChild(input);
-        row.appendChild(dayCell);
-    }
-
-    timetableBody.appendChild(row);
-}
-
-// Function to save data to Firebase
-function saveToDatabase(hour, day, value) {
-    firebase.database().ref('timetable/' + hour + '/' + day).set(value);
-}
-
-// Function to retrieve data from Firebase
-function loadFromDatabase() {
-    firebase.database().ref('timetable/').once('value').then((snapshot) => {
-        const data = snapshot.val();
-        if (data) {
-            // Populate the timetable with the data from Firebase
-            const rows = timetableBody.querySelectorAll("tr");
-            rows.forEach((row, hourIndex) => {
-                const cells = row.querySelectorAll("td input");
-                cells.forEach((cell, dayIndex) => {
-                    if (data[hourIndex] && data[hourIndex][dayIndex] !== undefined) {
-                        cell.value = data[hourIndex][dayIndex];
-                    }
-                });
+            // Sauvegarder dans Firebase lorsqu'une valeur est modifiée
+            input.addEventListener('change', function () {
+                saveToDatabase(hour, i, input.value);
             });
+
+            cell.appendChild(input);
+            row.appendChild(cell);
+        }
+
+        tableBody.appendChild(row); // Ajouter la ligne au tableau
+    }
+}
+
+// Fonction pour sauvegarder les données dans Firebase
+function saveToDatabase(hour, dayIndex, value) {
+    firebase.database().ref('timetable/' + hour + '/' + dayIndex).set(value);
+}
+
+// Fonction pour charger les données depuis Firebase
+function loadDataFromFirebase(hour, dayIndex, input) {
+    firebase.database().ref('timetable/' + hour + '/' + dayIndex).once('value').then((snapshot) => {
+        if (snapshot.exists()) {
+            input.value = snapshot.val();
         }
     });
 }
 
-// Enable editing when the correct code is entered
-document.getElementById("code-input").addEventListener("input", function() {
+// Activation de la modification avec un code spécifique
+document.getElementById('code-input').addEventListener('input', function() {
     if (this.value === "codecodecode") {
-        const inputs = document.querySelectorAll("td input");
+        const inputs = document.querySelectorAll('td input');
         inputs.forEach(input => input.disabled = false);
-        this.value = ""; // Clear the input field after entering the correct code
+        this.value = ""; // Effacer le champ après l'activation
         this.placeholder = "Modification activée";
     }
 });
 
-// Load data when the page loads
-loadFromDatabase();
+// Générer les lignes du tableau au chargement de la page
+window.onload = generateTimetableRows;
