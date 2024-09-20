@@ -1,6 +1,6 @@
-// Ajouter une vérification pour le chargement du DOM
-document.addEventListener('DOMContentLoaded', function() {
-    // Initialisation de Supabase (assurez-vous que cette ligne est dans DOMContentLoaded)
+// Assurez-vous que le DOM est chargé avant d'exécuter le script
+document.addEventListener('DOMContentLoaded', function () {
+    // Initialisation de Supabase : cette ligne ne doit être exécutée qu'après le chargement de la bibliothèque Supabase
     const supabaseUrl = 'https://znwzdkgshtrickigthgd.supabase.co';  // Remplace par ton URL Supabase
     const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inpud3pka2dzaHRyaWNraWd0aGdkIiwicm9sZSI6ImFub24iLCJpYXQiOjE3MjY4MjQyMzcsImV4cCI6MjA0MjQwMDIzN30.qGSSUfV7qjC0PUL3t_XVR3dXg6s5kRg0zwtQ2J1Gd5M';  // Remplace par ton anonpublic key
     const supabase = supabase.createClient(supabaseUrl, supabaseKey);
