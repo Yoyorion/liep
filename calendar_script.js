@@ -1,11 +1,10 @@
-// Vérification pour s'assurer que le DOM est entièrement chargé avant d'exécuter le script
 document.addEventListener('DOMContentLoaded', function () {
     // Initialisation de Supabase
     const supabaseUrl = 'https://znwzdkgshtrickigthgd.supabase.co';  // Remplace par ton URL Supabase
     const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inpud3pka2dzaHRyaWNraWd0aGdkIiwicm9sZSI6ImFub24iLCJpYXQiOjE3MjY4MjQyMzcsImV4cCI6MjA0MjQwMDIzN30.qGSSUfV7qjC0PUL3t_XVR3dXg6s5kRg0zwtQ2J1Gd5M';  // Remplace par ton anonpublic key
-    const supabase = window.supabase.createClient(supabaseUrl, supabaseKey);  // S'assurer que supabase est bien initialisé à partir de la bibliothèque
+    const supabase = window.supabase.createClient(supabaseUrl, supabaseKey);
 
-    // Fonction pour récupérer et afficher l'emploi du temps depuis la base de données
+    // Récupérer et afficher l'emploi du temps depuis la base de données
     async function fetchTimetable() {
         const { data, error } = await supabase
             .from('timetable')  // Nom de ta table dans Supabase
@@ -53,6 +52,16 @@ document.addEventListener('DOMContentLoaded', function () {
                 input.setAttribute('data-hour', hour);
                 input.setAttribute('data-day', day);
 
+                // Ajouter l'écouteur de l'événement change
+                input.addEventListener('change', async function () {
+                    const hour = input.getAttribute('data-hour');
+                    const day = input.getAttribute('data-day');
+                    const newValue = input.value;
+
+                    // Enregistrer la modification dans la base de données
+                    await updateTimetable(hour, day, newValue);
+                });
+
                 cell.appendChild(input);
                 row.appendChild(cell);
             }
@@ -68,18 +77,6 @@ document.addEventListener('DOMContentLoaded', function () {
             inputs.forEach(input => input.disabled = false);  // Activer les champs
             this.value = '';  // Effacer le champ après validation
             this.placeholder = 'Modification activée';
-
-            // Ajouter un listener pour chaque input modifiable
-            inputs.forEach(input => {
-                input.addEventListener('change', async function() {
-                    const hour = input.getAttribute('data-hour');
-                    const day = input.getAttribute('data-day');
-                    const newValue = input.value;
-
-                    // Enregistrer la modification dans la base de données
-                    await updateTimetable(hour, day, newValue);
-                });
-            });
         }
     });
 
