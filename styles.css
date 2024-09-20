@@ -185,3 +185,69 @@ footer {
 .homework-button:hover {
     background-color: #cccccc;
 }
+
+/* Media Queries pour rendre le site responsive sur mobile */
+@media (max-width: 768px) {
+    /* Réduire la taille des bulles pour mobile */
+    .program-bubble,
+    .homework-bubble {
+        width: 150px; /* Réduit la largeur pour les écrans plus petits */
+        height: 60%; /* Réduit la hauteur pour les écrans plus petits */
+    }
+
+    /* Ajuster la taille du texte et des boutons */
+    .program-bubble p,
+    .homework-bubble p {
+        font-size: 1.2em; /* Réduire la taille du texte */
+    }
+
+    .program-button,
+    .homework-button {
+        padding: 8px 12px;
+        font-size: 1em; /* Réduire la taille des boutons */
+    }
+
+    /* Ajuster l'en-tête pour mobile */
+    header {
+        padding: 10px;
+    }
+
+    h1 {
+        font-size: 2em; /* Réduire la taille du titre pour mobile */
+    }
+
+    /* Ajuster la section présentation */
+    .presentation {
+        padding: 15px;
+        max-width: 100%; /* Utiliser tout l'espace sur mobile */
+    }
+
+    .image-chien {
+        width: 150px;
+        height: 150px; /* Réduire la taille de l'image */
+    }
+
+    .presentation p {
+        font-size: 1em; /* Réduire la taille du texte */
+    }
+
+    /* Formulaire */
+    .formulaire {
+        padding: 15px;
+    }
+
+    textarea {
+        width: 100%; /* Utiliser tout l'espace disponible */
+        font-size: 1em; /* Réduire la taille du texte */
+    }
+
+    button {
+        font-size: 1em;
+        padding: 8px 12px;
+    }
+
+    /* Footer */
+    footer {
+        padding: 10px;
+    }
+}
