@@ -107,4 +107,3 @@ document.addEventListener('DOMContentLoaded', function () {
     // Appeler la fonction pour charger l'emploi du temps lors du chargement de la page
     fetchTimetable();
 });
-
