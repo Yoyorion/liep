@@ -52,16 +52,6 @@ document.addEventListener('DOMContentLoaded', function () {
                 input.setAttribute('data-hour', hour);
                 input.setAttribute('data-day', day);
 
-                // Ajouter l'écouteur de l'événement change
-                input.addEventListener('change', async function () {
-                    const hour = input.getAttribute('data-hour');
-                    const day = input.getAttribute('data-day');
-                    const newValue = input.value;
-
-                    // Enregistrer la modification dans la base de données
-                    await updateTimetable(hour, day, newValue);
-                });
-
                 cell.appendChild(input);
                 row.appendChild(cell);
             }
@@ -94,6 +84,23 @@ document.addEventListener('DOMContentLoaded', function () {
             console.log('Données mises à jour:', data);
         }
     }
+
+    // Ecouter l'événement "Enter" pour enregistrer toutes les modifications
+    document.addEventListener('keydown', function(event) {
+        if (event.key === 'Enter') {
+            event.preventDefault();  // Empêche l'action par défaut du bouton "Enter"
+            const inputs = document.querySelectorAll('td input:not(:disabled)');  // Sélectionner uniquement les inputs modifiables
+
+            inputs.forEach(input => {
+                const hour = input.getAttribute('data-hour');
+                const day = input.getAttribute('data-day');
+                const newValue = input.value;
+
+                // Enregistrer la modification dans la base de données
+                updateTimetable(hour, day, newValue);
+            });
+        }
+    });
 
     // Appeler la fonction pour charger l'emploi du temps lors du chargement de la page
     fetchTimetable();
