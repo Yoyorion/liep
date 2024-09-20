@@ -66,4 +66,38 @@ document.addEventListener('DOMContentLoaded', function () {
         if (this.value === 'codecodecode') {
             const inputs = document.querySelectorAll('td input');
             inputs.forEach(input => input.disabled = false);  // Activer les champs
-            this.value
+            this.value = '';  // Effacer le champ après validation
+            this.placeholder = 'Modification activée';
+
+            // Ajouter un listener pour chaque input modifiable
+            inputs.forEach(input => {
+                input.addEventListener('change', async function() {
+                    const hour = input.getAttribute('data-hour');
+                    const day = input.getAttribute('data-day');
+                    const newValue = input.value;
+
+                    // Enregistrer la modification dans la base de données
+                    await updateTimetable(hour, day, newValue);
+                });
+            });
+        }
+    });
+
+    // Fonction pour mettre à jour la base de données avec les modifications
+    async function updateTimetable(hour, day, activity) {
+        const { data, error } = await supabase
+            .from('timetable')  // Nom de la table
+            .upsert({ hour, day, activity })  // Mettre à jour ou insérer si la donnée n'existe pas
+            .eq('hour', hour)
+            .eq('day', day);
+
+        if (error) {
+            console.error('Erreur lors de la mise à jour des données:', error);
+        } else {
+            console.log('Données mises à jour:', data);
+        }
+    }
+
+    // Appeler la fonction pour charger l'emploi du temps lors du chargement de la page
+    fetchTimetable();
+});
