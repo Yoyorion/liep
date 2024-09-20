@@ -40,18 +40,20 @@ document.addEventListener('DOMContentLoaded', function () {
                 const cell = document.createElement('td');
                 const input = document.createElement('input');
                 input.type = 'text';
-                input.value = '';  // Initialement vide
 
                 // Remplir les données si présentes dans la base
                 const entry = data.find(entry => entry.hour === hour && entry.day === day);
                 if (entry && entry.activity) {
                     input.value = entry.activity;  // Afficher l'activité si disponible
+                } else {
+                    input.value = '';  // Si pas de données, vide
                 }
 
                 input.disabled = true;  // Désactivé par défaut
                 input.setAttribute('data-hour', hour);
                 input.setAttribute('data-day', day);
 
+                // Ajouter chaque input au tableau
                 cell.appendChild(input);
                 row.appendChild(cell);
             }
@@ -64,7 +66,7 @@ document.addEventListener('DOMContentLoaded', function () {
     document.getElementById('code-input').addEventListener('input', function() {
         if (this.value === 'codecodecode') {
             const inputs = document.querySelectorAll('td input');
-            inputs.forEach(input => input.disabled = false);  // Activer les champs
+            inputs.forEach(input => input.disabled = false);  // Activer tous les champs, qu'ils soient vides ou remplis
             this.value = '';  // Effacer le champ après validation
             this.placeholder = 'Modification activée';
         }
@@ -105,3 +107,4 @@ document.addEventListener('DOMContentLoaded', function () {
     // Appeler la fonction pour charger l'emploi du temps lors du chargement de la page
     fetchTimetable();
 });
+
