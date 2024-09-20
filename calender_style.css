@@ -1,74 +1,71 @@
-/* General style */
+/* Style général */
 body {
     font-family: 'Arial', sans-serif;
     margin: 0;
-    padding: 0;
-    background: linear-gradient(135deg, #1E90FF, #FF6347); /* Apply the same gradient background */
-    color: #000;
+    padding: 20px;
+    background: linear-gradient(135deg, #1E90FF, #FF6347); /* Dégradé bleu vers rouge */
+    color: #f0f0f0;
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    height: 100vh;
+    text-align: center;
+    min-height: 100vh;
 }
 
-/* Top-right tab */
+h2 {
+    margin-bottom: 20px;
+    font-size: 2em;
+    color: #fff;
+}
+
+/* Tableau des emplois du temps */
+table {
+    width: 100%;
+    max-width: 1200px;
+    border-collapse: collapse;
+    margin-top: 20px;
+    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+th, td {
+    border: 1px solid #ccc;
+    padding: 10px;
+    text-align: center;
+    font-size: 1.2em;
+}
+
+th {
+    background-color: rgba(0, 0, 0, 0.8);
+    color: #fff;
+    text-transform: uppercase;
+}
+
+td input {
+    width: 100%;
+    padding: 8px;
+    border: none;
+    background-color: #f0f0f0;
+    font-size: 1em;
+    text-align: center;
+    border-radius: 4px;
+}
+
+td input:disabled {
+    background-color: #e0e0e0;
+    color: #777;
+}
+
+/* Bouton de code en haut à droite */
 .top-right-tab {
-    position: absolute;
+    position: fixed;
     top: 10px;
     right: 10px;
 }
 
 #code-input {
-    padding: 5px;
-    font-size: 14px;
-    border: 1px solid black;
-    border-radius: 4px;
-}
-
-/* Timetable style */
-#timetable {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    margin-top: 20px;
-    background-color: #000; /* Make the background of the timetable black */
-    padding: 30px; /* Increased padding to make the container larger */
-    border-radius: 10px;
-}
-
-table {
-    width: 135%; /* Increase the width by 50% */
-    max-width: 1800px; /* Limit the width on large screens */
-    border-collapse: collapse;
-    background-color: #000; /* Black background for the entire timetable */
-}
-
-th, td {
-    border: 1px solid white; /* White border to contrast with black background */
-    text-align: center;
-    padding: 18px; /* Increase padding proportionally */
-    font-size: 24px; /* Increase font size by 50% */
-    color: white; /* White text for visibility on black background */
-}
-
-thead {
-    background-color: #333; /* Slightly lighter black for the header */
-    color: #fff; /* White text in the header */
-}
-
-td {
-    padding: 0; /* Remove padding inside cells */
-}
-
-/* Input fields should be centered */
-td input {
-    width: 100%; /* Make the input take the full width of the cell */
-    padding: 12px; /* Increase padding for larger input fields */
-    font-size: 21px; /* Increase font size by 50% */
-    text-align: center; /* Center the text inside the input */
-    background-color: #333; /* Dark gray background for input fields */
-    color: white; /* White text in input fields */
-    border: none; /* Remove borders from the input */
-    box-sizing: border-box; /* Ensure the padding doesn't affect the width */
+    padding: 10px;
+    font-size: 1.2em;
+    border-radius: 5px;
+    border: 2px solid #333;
 }
