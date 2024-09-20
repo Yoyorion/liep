@@ -1,24 +1,25 @@
-// Configuration Firebase
-const firebaseConfig = {
-    apiKey: "AIzaSyAeYwgSXpUJXdq5nL8bmANj5w4gJr03Aj8",
-    authDomain: "nd5-2dc24.firebaseapp.com",
-    projectId: "nd5-2dc24",
-    storageBucket: "nd5-2dc24.appspot.com",
-    messagingSenderId: "482770675959",
-    appId: "1:482770675959:web:3307583fc3394bab7e0bf2",
-    measurementId: "G-VX8G913VW3"
-};
-
-// Initialisation de Firebase
-firebase.initializeApp(firebaseConfig);
-const database = firebase.database();
+// Initialisation de Supabase
+const { createClient } = supabase;
+const supabaseUrl = 'https://znwzdkgshtrickigthgd.supabase.co';
+const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inpud3pka2dzaHRyaWNraWd0aGdkIiwicm9sZSI6ImFub24iLCJpYXQiOjE3MjY4MjQyMzcsImV4cCI6MjA0MjQwMDIzN30.qGSSUfV7qjC0PUL3t_XVR3dXg6s5kRg0zwtQ2J1Gd5M';
+const supabase = createClient(supabaseUrl, supabaseKey);
 
 // Fonction pour générer les lignes du tableau pour l'emploi du temps
-function generateTimetableRows() {
+async function generateTimetableRows() {
     const tableBody = document.getElementById('calendar-body');
     const days = ['Lundi', 'Mardi', 'Mercredi', 'Jeudi', 'Vendredi'];
     const startHour = 8;
     const endHour = 18;
+
+    // Récupérer les données depuis Supabase
+    const { data: timetable, error } = await supabase
+        .from('timetable')
+        .select('*');
+
+    if (error) {
+        console.error('Erreur lors de la récupération des données:', error);
+        return;
+    }
 
     // Générer les heures (lignes)
     for (let hour = startHour; hour <= endHour; hour++) {
@@ -36,12 +37,15 @@ function generateTimetableRows() {
             input.type = 'text';
             input.disabled = true; // Désactivé par défaut
 
-            // Charger les données depuis Firebase
-            loadDataFromFirebase(hour, i, input);
+            // Charger les données depuis Supabase si disponibles
+            const timetableEntry = timetable.find(entry => entry.hour === hour && entry.day_index === i);
+            if (timetableEntry) {
+                input.value = timetableEntry.subject;
+            }
 
-            // Sauvegarder dans Firebase lorsqu'une valeur est modifiée
-            input.addEventListener('change', function () {
-                saveToDatabase(hour, i, input.value);
+            // Sauvegarder dans Supabase lorsqu'une valeur est modifiée
+            input.addEventListener('change', async function () {
+                await saveToDatabase(hour, i, input.value);
             });
 
             cell.appendChild(input);
@@ -52,26 +56,18 @@ function generateTimetableRows() {
     }
 }
 
-// Fonction pour sauvegarder les données dans Firebase
-function saveToDatabase(hour, dayIndex, value) {
-    firebase.database().ref('timetable/' + hour + '/' + dayIndex).set(value);
-}
+// Fonction pour sauvegarder les données dans Supabase
+async function saveToDatabase(hour, dayIndex, subject) {
+    const { data, error } = await supabase
+        .from('timetable')
+        .upsert({ hour, day_index: dayIndex, subject });
 
-// Fonction pour charger les données depuis Firebase
-function loadDataFromFirebase(hour, dayIndex, input) {
-    firebase.database().ref('timetable/' + hour + '/' + dayIndex).once('value').then((snapshot) => {
-        if (snapshot.exists()) {
-            input.value = snapshot.val();
-        }
-    });
+    if (error) {
+        console.error('Erreur lors de la sauvegarde des données:', error);
+    } else {
+        console.log('Données sauvegardées avec succès');
+    }
 }
-firebase.database().ref(".info/connected").on("value", function(snapshot) {
-  if (snapshot.val() === true) {
-    console.log("Connecté à Firebase");
-  } else {
-    console.log("Déconnecté de Firebase");
-  }
-});
 
 // Activation de la modification avec un code spécifique
 document.getElementById('code-input').addEventListener('input', function() {
