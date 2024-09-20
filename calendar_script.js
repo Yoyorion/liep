@@ -1,5 +1,5 @@
 // Initialisation de Supabase
-const supabaseUrl = 'https://znwzdkgshtrickigthgd.supabase.co';  // URL Supabase
+const supabaseUrl = 'https://znwzdkgshtrickigthgd.supabase.co';  // URL de Supabase
 const supabaseAnonKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inpud3pka2dzaHRyaWNraWd0aGdkIiwicm9sZSI6ImFub24iLCJpYXQiOjE3MjY4MjQyMzcsImV4cCI6MjA0MjQwMDIzN30.qGSSUfV7qjC0PUL3t_XVR3dXg6s5kRg0zwtQ2J1Gd5M';  // Clé Anon publique
 const supabase = supabase.createClient(supabaseUrl, supabaseAnonKey);
 
@@ -19,6 +19,8 @@ async function generateTimetableRows() {
         console.error('Erreur lors de la récupération des données :', error);
         return;
     }
+
+    console.log("Données récupérées :", timetable);
 
     // Générer les heures (lignes)
     for (let hour = startHour; hour <= endHour; hour++) {
