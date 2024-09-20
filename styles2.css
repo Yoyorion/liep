@@ -1,4 +1,4 @@
-/* Style pour la page du programme */
+/* Style général pour la page du programme */
 body {
     font-family: 'Arial', sans-serif;
     margin: 0;
@@ -11,7 +11,6 @@ body {
     justify-content: center;
     text-align: center;
     min-height: 100vh;
-    position: relative;
 }
 
 /* Style de l'en-tête */
@@ -23,7 +22,7 @@ header {
 }
 
 h1 {
-    font-size: 2.5em;
+    font-size: 3em; /* Taille du titre sur ordinateur */
     margin: 0;
     color: #ffffff;
     text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
@@ -36,6 +35,7 @@ h1 {
     background-color: rgba(255, 255, 255, 0.8);
     border-radius: 10px;
     box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
+    max-width: 800px; /* Limite la largeur pour les grands écrans */
 }
 
 ul {
@@ -55,4 +55,25 @@ footer {
     width: 100%;
     color: #ffffff;
     box-shadow: 0px -4px 8px rgba(0, 0, 0, 0.2);
+}
+
+/* Media Queries pour mobile */
+@media (max-width: 768px) {
+    h1 {
+        font-size: 2em; /* Réduire la taille du titre sur mobile */
+    }
+
+    .program-section {
+        padding: 15px;
+        margin: 10px;
+        max-width: 100%; /* Utilise toute la largeur sur mobile */
+    }
+
+    ul li {
+        font-size: 1.2em; /* Réduire la taille des éléments de la liste */
+    }
+
+    footer {
+        padding: 10px;
+    }
 }
