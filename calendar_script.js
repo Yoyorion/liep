@@ -6,6 +6,7 @@ const supabase = createClient(supabaseUrl, supabaseKey);
 
 // Fonction pour générer les lignes du tableau pour l'emploi du temps
 async function generateTimetableRows() {
+    console.log("Génération des lignes du tableau...");
     const tableBody = document.getElementById('calendar-body');
     const days = ['Lundi', 'Mardi', 'Mercredi', 'Jeudi', 'Vendredi'];
     const startHour = 8;
@@ -20,6 +21,8 @@ async function generateTimetableRows() {
         console.error('Erreur lors de la récupération des données:', error);
         return;
     }
+
+    console.log("Données récupérées depuis Supabase :", timetable);
 
     // Générer les heures (lignes)
     for (let hour = startHour; hour <= endHour; hour++) {
@@ -41,8 +44,10 @@ async function generateTimetableRows() {
             const timetableEntry = timetable.find(entry => entry.hour === hour && entry.day_index === i);
             if (timetableEntry) {
                 input.value = timetableEntry.subject; // Charger la matière
+                console.log(`Donnée trouvée pour ${hour}:00, ${days[i]}: ${input.value}`);
             } else {
                 input.value = ""; // Laisser la case vide si aucune donnée
+                console.log(`Pas de donnée pour ${hour}:00, ${days[i]}`);
             }
 
             // Sauvegarder dans Supabase lorsqu'une valeur est modifiée
@@ -60,6 +65,7 @@ async function generateTimetableRows() {
 
 // Fonction pour sauvegarder les données dans Supabase
 async function saveToDatabase(hour, dayIndex, subject) {
+    console.log(`Sauvegarde des données pour ${hour}:00, jour ${dayIndex}: ${subject}`);
     const { data, error } = await supabase
         .from('timetable')
         .upsert({ hour, day_index: dayIndex, subject });
@@ -78,6 +84,7 @@ document.getElementById('code-input').addEventListener('input', function() {
         inputs.forEach(input => input.disabled = false); // Rendre les champs modifiables
         this.value = ""; // Effacer le champ après l'activation
         this.placeholder = "Modification activée";
+        console.log('Modification activée');
     }
 });
 
