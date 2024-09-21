@@ -3,6 +3,24 @@ const supabaseUrl = 'https://shcuezruvlenxmtsgxrs.supabase.co';
 const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InNoY3VlenJ1dmxlbnhtdHNneHJzIiwicm9sZSI6ImFub24iLCJpYXQiOjE3MjY4NDgzNzEsImV4cCI6MjA0MjQyNDM3MX0.OhHpA0eGnPzo2ouhsD979vXAY9dVDC5TiFDMg5JbWao';
 const supabase = window.supabase.createClient(supabaseUrl, supabaseKey);
 
+// Test de connexion à Supabase
+async function testSupabaseConnection() {
+    const { data, error } = await supabase
+        .from('homework')
+        .select('*')
+        .limit(1); // Juste pour vérifier la connexion
+
+    if (error) {
+        console.error('Erreur de connexion à Supabase:', error);
+    } else {
+        console.log('Connexion à Supabase réussie:', data);
+    }
+}
+
+// Test de la connexion
+testSupabaseConnection();
+
+// Variables globales pour les matières
 const subjects = ['Français', 'Espagnol', 'Littérature', 'Histoire-Géo', 'Mathématiques', 'SVT', 'Physique-Chimie', 'Techno', 'SES', 'EMC'];
 
 // Fonction pour générer les 31 lignes de devoirs avec les dates à partir d'aujourd'hui
@@ -70,12 +88,16 @@ document.getElementById('code-input').addEventListener('input', function () {
 
 // Fonction pour sauvegarder les modifications dans la base de données
 async function saveHomeworkEntry(day, subject, value) {
+    console.log(`Sauvegarde de la donnée - Jour : ${day}, Matière : ${subject}, Valeur : ${value}`);
+    
     const { data, error } = await supabase
         .from('homework')
         .upsert({ day, subject, value });
 
     if (error) {
         console.error('Erreur lors de la sauvegarde des données:', error);
+    } else {
+        console.log('Donnée sauvegardée avec succès:', data);
     }
 }
 
