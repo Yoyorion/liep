@@ -17,12 +17,6 @@ async function generateHomeworkRows() {
         currentDate.setDate(today.getDate() + i); // Ajouter des jours à la date d'aujourd'hui
         const formattedDate = ("0" + currentDate.getDate()).slice(-2) + "/" + ("0" + (currentDate.getMonth() + 1)).slice(-2);
 
-        // Vérifier si des données existent déjà dans la base pour cette date
-        const { data: existingData, error } = await supabase
-            .from('homework')  // Remplace par le nom de ta table de devoirs
-            .select('*')
-            .eq('date', formattedDate); // Assurez-vous que 'date' correspond à votre colonne
-
         const row = document.createElement('tr');
 
         // Première colonne: la date
@@ -37,30 +31,6 @@ async function generateHomeworkRows() {
             const input = document.createElement('input');
             input.type = 'text';
             input.disabled = true; // Les champs sont désactivés par défaut
-
-            // Remplir les données si présentes dans la base
-            if (existingData && existingData.length > 0) {
-                const subjectEntry = existingData[0][subject]; // Utiliser la colonne correspondante
-                if (subjectEntry) {
-                    input.value = subjectEntry; // Afficher l'activité si disponible
-                }
-            }
-
-            // Attribuer des attributs pour la mise à jour
-            input.setAttribute('data-date', formattedDate);
-            input.setAttribute('data-subject', subject);
-
-            // Ajouter l'écouteur pour la modification
-            input.addEventListener('change', async function () {
-                const newValue = input.value;
-
-                // Supprimer l'ancienne entrée avant de mettre la nouvelle
-                await deleteExistingHomeworkEntry(formattedDate, subject);
-
-                // Enregistrer ou mettre à jour la nouvelle valeur
-                await insertNewHomeworkEntry(formattedDate, subject, newValue);
-            });
-
             cell.appendChild(input);
             row.appendChild(cell);
         });
@@ -70,41 +40,57 @@ async function generateHomeworkRows() {
     }
 }
 
-// Fonction pour supprimer l'entrée existante pour une combinaison de date et matière
-async function deleteExistingHomeworkEntry(date, subject) {
+// Fonction pour supprimer toutes les données de la base de données
+async function deleteAllHomeworkEntries() {
     const { data, error } = await supabase
         .from('homework')  // Remplace par le nom de ta table de devoirs
-        .delete()  // Supprimer l'entrée existante
-        .eq('date', date)
-        .not('subject', 'is', null);  // Assurer que la matière est bien prise en compte
+        .delete();
 
     if (error) {
         console.error('Erreur lors de la suppression des données:', error);
     } else {
-        console.log('Donnée supprimée:', data);
+        console.log('Toutes les données supprimées:', data);
     }
 }
 
-// Fonction pour insérer la nouvelle entrée
-async function insertNewHomeworkEntry(date, subject, activity) {
-    const { data, error } = await supabase
-        .from('homework')  // Remplace par le nom de ta table de devoirs
-        .upsert({ date, [subject]: activity });  // Insérer ou mettre à jour
+// Fonction pour enregistrer le tableau dans la base de données
+async function saveHomeworkEntries() {
+    const tableBody = document.getElementById('table-body');
+    const rows = tableBody.getElementsByTagName('tr');
 
-    if (error) {
-        console.error('Erreur lors de la mise à jour des données:', error);
-    } else {
-        console.log('Nouvelle donnée insérée:', data);
+    for (const row of rows) {
+        const date = row.cells[0].textContent; // La première cellule est la date
+        const subjects = ['français', 'espagnol', 'littérature', 'histoire-géo', 'mathématiques', 'svt', 'physique-chimie', 'techno', 'ses', 'emc'];
+
+        for (let i = 0; i < subjects.length; i++) {
+            const input = row.cells[i + 1].querySelector('input'); // Chaque input
+            const activity = input.value;
+
+            // Enregistrer la donnée
+            await supabase.from('homework').insert({
+                date,
+                [subjects[i]]: activity // Insérer chaque matière avec son activité
+            });
+        }
     }
 }
 
-// Fonction pour permettre la modification du tableau si le bon code est entré
+// Événement pour permettre la modification du tableau si le bon code est entré
 document.getElementById('code-input').addEventListener('input', function () {
     if (this.value === 'codecodecode') {
         const inputs = document.querySelectorAll('td input');
         inputs.forEach(input => input.disabled = false); // Activer les champs pour modification
         this.value = ''; // Effacer le code après validation
         this.placeholder = 'Modification activée';
+    }
+});
+
+// Événement pour supprimer les anciennes données et enregistrer les nouvelles à l'appui de la touche Entrée
+document.getElementById('code-input').addEventListener('keypress', async function (event) {
+    if (event.key === 'Enter') {
+        await deleteAllHomeworkEntries(); // Supprimer toutes les anciennes données
+        await saveHomeworkEntries(); // Enregistrer le tableau affiché
+        alert('Les données ont été mises à jour avec succès !'); // Alerte pour confirmation
     }
 });
 
