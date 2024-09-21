@@ -1,8 +1,8 @@
 // Vérification pour s'assurer que le DOM est entièrement chargé avant d'exécuter le script
 document.addEventListener('DOMContentLoaded', function () {
     // Initialisation de Supabase
-    const supabaseUrl = 'https://rmidxaibwmvbmtxpubgv.supabase.co';  // Remplace par ton URL Supabase
-    const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InJtaWR4YWlid212Ym10eHB1Ymd2Iiwicm9zZSI6ImFub24iLCJpYXQiOjE3MjY4NDczODEsImV4cCI6MjA0MjQyMzM4MX0.pj54J6XB1xcEbZJETypCttJEr9vnm6JDoUfwz2TV_F4';  // Remplace par ton anonpublic key
+    const supabaseUrl = 'https://znwzdkgshtrickigthgd.supabase.co';  // Remplace par ton URL Supabase
+    const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inpud3pka2dzaHRyaWNraWd0aGdkIiwicm9sZSI6ImFub24iLCJpYXQiOjE3MjY4MjQyMzcsImV4cCI6MjA0MjQwMDIzN30.qGSSUfV7qjC0PUL3t_XVR3dXg6s5kRg0zwtQ2J1Gd5M';  // Remplace par ton anonpublic key
     const supabase = window.supabase.createClient(supabaseUrl, supabaseKey);  // S'assurer que supabase est bien initialisé à partir de la bibliothèque
 
     // Fonction pour récupérer et afficher l'emploi du temps depuis la base de données
