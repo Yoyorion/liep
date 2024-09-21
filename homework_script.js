@@ -1,6 +1,6 @@
 // Initialisation de Supabase
 const supabaseUrl = 'https://shcuezruvlenxmtsgxrs.supabase.co';
-const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InNoY3VlenJ1dmxlbnhtdHNneHJzIiwicm9sZSI6ImFub24iLCJpYXQiOjE3MjY4NDgzNzEsImV4cCI6MjA0MjQyNDM3MX0.OhHpA0eGnPzo2ouhsD979vXAY9dVDC5TiFDMg5JbWao';
+const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InNoY3VlenJ1dmxlbnhtdHNneHJzIiwicm9zZSI6ImFub24iLCJpYXQiOjE3MjY4NDgzNzEsImV4cCI6MjA0MjQyNDM3MX0.OhHpA0eGnPzo2ouhsD979vXAY9dVDC5TiFDMg5JbWao';
 const supabase = window.supabase.createClient(supabaseUrl, supabaseKey);
 
 // Fonction pour générer les 31 lignes de devoirs avec les dates à partir d'aujourd'hui
@@ -54,8 +54,11 @@ async function generateHomeworkRows() {
             input.addEventListener('change', async function () {
                 const newValue = input.value;
 
-                // Enregistrer ou mettre à jour la valeur dans la base de données
-                await updateHomeworkEntry(formattedDate, subject, newValue);
+                // Supprimer l'entrée existante avant d'insérer la nouvelle
+                await deleteExistingEntry(formattedDate, subject);
+
+                // Enregistrer la nouvelle valeur
+                await insertNewEntry(formattedDate, subject, newValue);
             });
 
             cell.appendChild(input);
@@ -67,16 +70,31 @@ async function generateHomeworkRows() {
     }
 }
 
-// Fonction pour mettre à jour la base de données avec les devoirs
-async function updateHomeworkEntry(date, subject, activity) {
+// Fonction pour supprimer une entrée existante
+async function deleteExistingEntry(date, subject) {
     const { data, error } = await supabase
-        .from('homework')  // Remplace par le nom de ta table de devoirs
-        .upsert({ date, [subject]: activity });  // Insérer ou mettre à jour
+        .from('homework')
+        .delete()
+        .eq('date', date)
+        .eq('subject', subject); // Remplace 'subject' par le nom de la colonne pour la matière
 
     if (error) {
-        console.error('Erreur lors de la mise à jour des données:', error);
+        console.error('Erreur lors de la suppression des données:', error);
     } else {
-        console.log('Devoirs mis à jour:', data);
+        console.log('Données supprimées:', data);
+    }
+}
+
+// Fonction pour insérer une nouvelle entrée
+async function insertNewEntry(date, subject, activity) {
+    const { data, error } = await supabase
+        .from('homework')
+        .insert({ date, [subject]: activity }); // Insérer la nouvelle valeur
+
+    if (error) {
+        console.error('Erreur lors de l\'insertion des données:', error);
+    } else {
+        console.log('Nouvelle donnée insérée:', data);
     }
 }
 
