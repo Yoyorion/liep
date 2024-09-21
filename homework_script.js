@@ -99,10 +99,24 @@ document.getElementById('code-input').addEventListener('input', function () {
 // Fonction pour sauvegarder les modifications dans la base de données
 async function saveHomeworkEntry(day, subject, value) {
     console.log(`Tentative de sauvegarde - Jour : ${day}, Matière : ${subject}, Valeur : ${value}`);
-    
+
+    // Supprimer toute entrée existante pour ce jour et cette matière
+    const { error: deleteError } = await supabase
+        .from('homework')
+        .delete()
+        .eq('day', day)
+        .eq('subject', subject);
+
+    if (deleteError) {
+        console.error('Erreur lors de la suppression de l\'ancienne entrée:', deleteError.message);
+    } else {
+        console.log(`Ancienne donnée supprimée pour Jour : ${day}, Matière : ${subject}`);
+    }
+
+    // Insérer la nouvelle entrée
     const { data, error } = await supabase
         .from('homework')
-        .upsert({ day, subject, value });
+        .insert({ day, subject, value });
 
     if (error) {
         console.error('Erreur lors de la sauvegarde des données:', error.message);
