@@ -1,6 +1,6 @@
 // Initialisation de Supabase
 const supabaseUrl = 'https://shcuezruvlenxmtsgxrs.supabase.co';
-const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InNoY3VlenJ1dmxlbnhtdHNneHJzIiwicm9sZSI6ImFub24iLCJpYXQiOjE3MjY4NDgzNzEsImV4cCI6MjA0MjQyNDM3MX0.OhHpA0eGnPzo2ouhsD979vXAY9dVDC5TiFDMg5JbWao';
+const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InNoY3VlenJ1dmxlbnhtdHNneHJzIiwicm9zZSI6ImFub24iLCJpYXQiOjE3MjY4NDgzNzEsImV4cCI6MjA0MjQyNDM3MX0.OhHpA0eGnPzo2ouhsD979vXAY9dVDC5TiFDMg5JbWao';
 const supabase = window.supabase.createClient(supabaseUrl, supabaseKey);
 
 // Fonction pour générer les 31 lignes de devoirs avec les dates à partir d'aujourd'hui
@@ -11,13 +11,25 @@ async function generateHomeworkRows() {
     // Supprimer les anciennes lignes s'il y en a
     tableBody.innerHTML = '';
 
-    // Boucle pour générer 31 jours
+    // Récupérer les données depuis la base de données
+    const { data: homeworkData, error } = await supabase
+        .from('homework')
+        .select('*')
+        .order('date', { ascending: true });
+
+    if (error) {
+        console.error("Erreur lors de la récupération des données:", error);
+        return;
+    }
+
+    // Boucle pour générer 31 jours (ou utiliser les données récupérées si présentes)
     for (let i = 0; i < 31; i++) {
+        const row = document.createElement('tr');
+        
+        // Calculer la date du jour (au format JJ/MM)
         const currentDate = new Date();
         currentDate.setDate(today.getDate() + i); // Ajouter des jours à la date d'aujourd'hui
         const formattedDate = ("0" + currentDate.getDate()).slice(-2) + "/" + ("0" + (currentDate.getMonth() + 1)).slice(-2);
-
-        const row = document.createElement('tr');
 
         // Première colonne: la date
         const dateCell = document.createElement('td');
@@ -25,12 +37,19 @@ async function generateHomeworkRows() {
         row.appendChild(dateCell);
 
         // Colonnes pour chaque matière
-        const subjects = ['français', 'espagnol', 'littérature', 'histoire-géo', 'mathématiques', 'svt', 'physique-chimie', 'techno', 'ses', 'emc'];
+        const subjects = ['francais', 'espagnol', 'litterature', 'histoire_geo', 'mathematiques', 'svt', 'physique_chimie', 'techno', 'ses', 'emc'];
         subjects.forEach(subject => {
             const cell = document.createElement('td');
             const input = document.createElement('input');
             input.type = 'text';
             input.disabled = true; // Les champs sont désactivés par défaut
+
+            // Si les données existent dans la base pour cette date, les remplir
+            const entry = homeworkData ? homeworkData[i] : null;
+            if (entry && entry[subject]) {
+                input.value = entry[subject];
+            }
+
             cell.appendChild(input);
             row.appendChild(cell);
         });
@@ -40,50 +59,7 @@ async function generateHomeworkRows() {
     }
 }
 
-// Fonction pour supprimer toutes les données de la base de données
-async function deleteAllHomeworkEntries() {
-    const { data, error } = await supabase
-        .from('homework')  // Remplace par le nom de ta table de devoirs
-        .delete();
-
-    if (error) {
-        console.error('Erreur lors de la suppression des données:', error);
-    } else {
-        console.log('Toutes les données supprimées:', data);
-    }
-}
-
-// Fonction pour enregistrer le tableau dans la base de données
-async function saveHomeworkEntries() {
-    const tableBody = document.getElementById('table-body');
-    const rows = tableBody.getElementsByTagName('tr');
-
-    for (const row of rows) {
-        const date = row.cells[0].textContent; // La première cellule est la date
-        const subjects = ['français', 'espagnol', 'littérature', 'histoire-géo', 'mathématiques', 'svt', 'physique-chimie', 'techno', 'ses', 'emc'];
-
-        const entry = { date }; // Préparer l'entrée avec la date
-
-        for (let i = 0; i < subjects.length; i++) {
-            const input = row.cells[i + 1].querySelector('input'); // Chaque input
-            const activity = input.value;
-
-            // Ajouter la matière dans l'objet d'entrée
-            entry[subjects[i]] = activity;
-        }
-
-        // Enregistrer la donnée
-        const { data, error } = await supabase.from('homework').insert(entry);
-        
-        if (error) {
-            console.error('Erreur lors de l\'enregistrement des données:', error);
-        } else {
-            console.log('Donnée enregistrée:', data);
-        }
-    }
-}
-
-// Événement pour permettre la modification du tableau si le bon code est entré
+// Fonction pour permettre la modification du tableau si le bon code est entré
 document.getElementById('code-input').addEventListener('input', function () {
     if (this.value === 'codecodecode') {
         const inputs = document.querySelectorAll('td input');
@@ -93,16 +69,96 @@ document.getElementById('code-input').addEventListener('input', function () {
     }
 });
 
-// Événement pour supprimer les anciennes données et enregistrer les nouvelles à l'appui de la touche Entrée
-document.getElementById('code-input').addEventListener('keypress', async function (event) {
-    if (event.key === 'Enter') {
-        await deleteAllHomeworkEntries(); // Supprimer toutes les anciennes données
-        await saveHomeworkEntries(); // Enregistrer le tableau affiché
-        alert('Les données ont été mises à jour avec succès !'); // Alerte pour confirmation
-    }
-});
+// Fonction pour supprimer la première ligne chaque jour et ajuster les dates
+async function shiftHomeworkRows() {
+    const today = new Date();
+    const formattedToday = today.toISOString().split('T')[0];
 
-// Appeler la fonction pour générer les 31 lignes au chargement de la page
-window.onload = function () {
-    generateHomeworkRows();
+    // Supprimer la ligne la plus ancienne (celle du jour précédent)
+    const { error: deleteError } = await supabase
+        .from('homework')
+        .delete()
+        .lt('date', formattedToday);
+
+    if (deleteError) {
+        console.error("Erreur lors de la suppression des anciennes données:", deleteError);
+    }
+
+    // Récupérer les données restantes et décaler les dates
+    const { data: remainingData, error: fetchError } = await supabase
+        .from('homework')
+        .select('*')
+        .order('date', { ascending: true });
+
+    if (fetchError) {
+        console.error("Erreur lors de la récupération des données restantes:", fetchError);
+    }
+
+    // Mettre à jour les dates pour les autres lignes
+    remainingData.forEach(async (row, index) => {
+        const newDate = new Date();
+        newDate.setDate(newDate.getDate() + index); // Décaler chaque date d'un jour
+
+        // Mettre à jour chaque ligne dans la base de données
+        const { error: updateError } = await supabase
+            .from('homework')
+            .update({ date: newDate.toISOString().split('T')[0] })
+            .eq('id', row.id);
+
+        if (updateError) {
+            console.error("Erreur lors de la mise à jour des dates:", updateError);
+        }
+    });
+
+    // Ajouter une nouvelle ligne vierge pour le jour 32
+    const newDate = new Date();
+    newDate.setDate(newDate.getDate() + 31); // Ajouter une nouvelle ligne pour dans 31 jours
+
+    const { error: insertError } = await supabase
+        .from('homework')
+        .insert({ date: newDate.toISOString().split('T')[0] }); // Nouvelle ligne vierge
+
+    if (insertError) {
+        console.error("Erreur lors de l'insertion de la nouvelle ligne:", insertError);
+    }
+}
+
+// Fonction pour enregistrer les modifications après la saisie du code
+async function saveHomeworkEntries() {
+    const tableBody = document.getElementById('table-body');
+    const rows = tableBody.getElementsByTagName('tr');
+
+    for (const row of rows) {
+        const date = row.cells[0].textContent; // La première cellule est la date
+        const formattedDate = new Date(`${date.split('/')[2]}-${date.split('/')[1]}-${date.split('/')[0]}`).toISOString().split('T')[0];
+
+        const subjects = ['francais', 'espagnol', 'litterature', 'histoire_geo', 'mathematiques', 'svt', 'physique_chimie', 'techno', 'ses', 'emc'];
+        const entry = { date: formattedDate }; // Préparer l'entrée avec la date
+
+        for (let i = 0; i < subjects.length; i++) {
+            const input = row.cells[i + 1].querySelector('input'); // Chaque input
+            const activity = input.value;
+
+            // Ajouter la matière dans l'objet d'entrée
+            entry[subjects[i]] = activity;
+        }
+
+        // Supprimer l'ancienne entrée pour cette date
+        await supabase.from('homework').delete().eq('date', formattedDate);
+
+        // Enregistrer la nouvelle entrée
+        const { data, error } = await supabase.from('homework').insert(entry);
+        
+        if (error) {
+            console.error('Erreur lors de l\'enregistrement des données:', error);
+        } else {
+            console.log('Données mises à jour:', data);
+        }
+    }
+}
+
+// Appeler la fonction pour générer les 31 lignes et vérifier les mises à jour quotidiennes
+window.onload = async function () {
+    await shiftHomeworkRows(); // Mise à jour quotidienne
+    generateHomeworkRows(); // Générer les lignes de devoirs
 };
