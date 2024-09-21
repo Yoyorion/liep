@@ -54,7 +54,7 @@ async function generateHomeworkRows() {
             input.addEventListener('change', async function () {
                 const newValue = input.value;
 
-                // Supprimer l'entrée existante avant d'insérer la nouvelle
+                // Supprimer l'entrée existante avant d'insérer une nouvelle valeur
                 await deleteExistingEntry(formattedDate, subject);
 
                 // Enregistrer la nouvelle valeur
@@ -76,7 +76,7 @@ async function deleteExistingEntry(date, subject) {
         .from('homework')
         .delete()
         .eq('date', date)
-        .eq(subject, null); // Supprime l'entrée pour la matière correspondante
+        .eq(subject, null); // Utiliser l'attribut de matière approprié
 
     if (error) {
         console.error('Erreur lors de la suppression des données:', error);
@@ -89,7 +89,7 @@ async function deleteExistingEntry(date, subject) {
 async function insertNewEntry(date, subject, activity) {
     const { data, error } = await supabase
         .from('homework')
-        .upsert({ date, [subject]: activity }); // Insérer la nouvelle valeur
+        .insert({ date, [subject]: activity }); // Insérer la nouvelle valeur
 
     if (error) {
         console.error('Erreur lors de l\'insertion des données:', error);
