@@ -62,15 +62,23 @@ async function saveHomeworkEntries() {
         const date = row.cells[0].textContent; // La première cellule est la date
         const subjects = ['français', 'espagnol', 'littérature', 'histoire-géo', 'mathématiques', 'svt', 'physique-chimie', 'techno', 'ses', 'emc'];
 
+        const entry = { date }; // Préparer l'entrée avec la date
+
         for (let i = 0; i < subjects.length; i++) {
             const input = row.cells[i + 1].querySelector('input'); // Chaque input
             const activity = input.value;
 
-            // Enregistrer la donnée
-            await supabase.from('homework').insert({
-                date,
-                [subjects[i]]: activity // Insérer chaque matière avec son activité
-            });
+            // Ajouter la matière dans l'objet d'entrée
+            entry[subjects[i]] = activity;
+        }
+
+        // Enregistrer la donnée
+        const { data, error } = await supabase.from('homework').insert(entry);
+        
+        if (error) {
+            console.error('Erreur lors de l\'enregistrement des données:', error);
+        } else {
+            console.log('Donnée enregistrée:', data);
         }
     }
 }
