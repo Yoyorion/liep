@@ -3,6 +3,8 @@ const supabaseUrl = 'https://shcuezruvlenxmtsgxrs.supabase.co';
 const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InNoY3VlenJ1dmxlbnhtdHNneHJzIiwicm9sZSI6ImFub24iLCJpYXQiOjE3MjY4NDgzNzEsImV4cCI6MjA0MjQyNDM3MX0.OhHpA0eGnPzo2ouhsD979vXAY9dVDC5TiFDMg5JbWao';
 const supabase = window.supabase.createClient(supabaseUrl, supabaseKey);
 
+const subjects = ['Français', 'Espagnol', 'Littérature', 'Histoire-Géo', 'Mathématiques', 'SVT', 'Physique-Chimie', 'Techno', 'SES', 'EMC'];
+
 // Fonction pour générer les 31 lignes de devoirs avec les dates à partir d'aujourd'hui
 async function generateHomeworkRows() {
     const tableBody = document.getElementById('table-body');
@@ -11,21 +13,10 @@ async function generateHomeworkRows() {
     // Supprimer les anciennes lignes s'il y en a
     tableBody.innerHTML = '';
 
-    // Récupérer les données depuis la base de données
-    const { data: homeworkData, error } = await supabase
-        .from('homework')
-        .select('*')
-        .order('date', { ascending: true });
-
-    if (error) {
-        console.error("Erreur lors de la récupération des données:", error);
-        return;
-    }
-
-    // Boucle pour générer 31 jours (ou utiliser les données récupérées si présentes)
+    // Boucle pour générer 31 jours
     for (let i = 0; i < 31; i++) {
         const row = document.createElement('tr');
-        
+
         // Calculer la date du jour (au format JJ/MM)
         const currentDate = new Date();
         currentDate.setDate(today.getDate() + i); // Ajouter des jours à la date d'aujourd'hui
@@ -37,22 +28,30 @@ async function generateHomeworkRows() {
         row.appendChild(dateCell);
 
         // Colonnes pour chaque matière
-        const subjects = ['francais', 'espagnol', 'litterature', 'histoire_geo', 'mathematiques', 'svt', 'physique_chimie', 'techno', 'ses', 'emc'];
-        subjects.forEach(subject => {
+        for (let j = 0; j < subjects.length; j++) {
             const cell = document.createElement('td');
             const input = document.createElement('input');
             input.type = 'text';
             input.disabled = true; // Les champs sont désactivés par défaut
+            input.dataset.day = i; // Stocker le numéro du jour
+            input.dataset.subject = subjects[j]; // Stocker la matière
 
-            // Si les données existent dans la base pour cette date, les remplir
-            const entry = homeworkData ? homeworkData[i] : null;
-            if (entry && entry[subject]) {
-                input.value = entry[subject];
+            // Charger les données de la base pour ce jour et cette matière
+            const { data: homeworkData, error } = await supabase
+                .from('homework')
+                .select('value')
+                .eq('day', i)
+                .eq('subject', subjects[j]);
+
+            if (error) {
+                console.error('Erreur lors de la récupération des données:', error);
+            } else if (homeworkData.length > 0) {
+                input.value = homeworkData[0].value;
             }
 
             cell.appendChild(input);
             row.appendChild(cell);
-        });
+        }
 
         // Ajouter la ligne au tableau
         tableBody.appendChild(row);
@@ -69,96 +68,91 @@ document.getElementById('code-input').addEventListener('input', function () {
     }
 });
 
-// Fonction pour supprimer la première ligne chaque jour et ajuster les dates
-async function shiftHomeworkRows() {
-    const today = new Date();
-    const formattedToday = today.toISOString().split('T')[0];
+// Fonction pour sauvegarder les modifications dans la base de données
+async function saveHomeworkEntry(day, subject, value) {
+    const { data, error } = await supabase
+        .from('homework')
+        .upsert({ day, subject, value });
 
-    // Supprimer la ligne la plus ancienne (celle du jour précédent)
-    const { error: deleteError } = await supabase
+    if (error) {
+        console.error('Erreur lors de la sauvegarde des données:', error);
+    }
+}
+
+// Fonction pour supprimer une ligne (jour)
+async function deleteHomeworkRow(day) {
+    const { data, error } = await supabase
         .from('homework')
         .delete()
-        .lt('date', formattedToday);
+        .eq('day', day);
 
-    if (deleteError) {
-        console.error("Erreur lors de la suppression des anciennes données:", deleteError);
-    }
-
-    // Récupérer les données restantes et décaler les dates
-    const { data: remainingData, error: fetchError } = await supabase
-        .from('homework')
-        .select('*')
-        .order('date', { ascending: true });
-
-    if (fetchError) {
-        console.error("Erreur lors de la récupération des données restantes:", fetchError);
-    }
-
-    // Mettre à jour les dates pour les autres lignes
-    remainingData.forEach(async (row, index) => {
-        const newDate = new Date();
-        newDate.setDate(newDate.getDate() + index); // Décaler chaque date d'un jour
-
-        // Mettre à jour chaque ligne dans la base de données
-        const { error: updateError } = await supabase
-            .from('homework')
-            .update({ date: newDate.toISOString().split('T')[0] })
-            .eq('id', row.id);
-
-        if (updateError) {
-            console.error("Erreur lors de la mise à jour des dates:", updateError);
-        }
-    });
-
-    // Ajouter une nouvelle ligne vierge pour le jour 32
-    const newDate = new Date();
-    newDate.setDate(newDate.getDate() + 31); // Ajouter une nouvelle ligne pour dans 31 jours
-
-    const { error: insertError } = await supabase
-        .from('homework')
-        .insert({ date: newDate.toISOString().split('T')[0] }); // Nouvelle ligne vierge
-
-    if (insertError) {
-        console.error("Erreur lors de l'insertion de la nouvelle ligne:", insertError);
+    if (error) {
+        console.error('Erreur lors de la suppression des données:', error);
     }
 }
 
-// Fonction pour enregistrer les modifications après la saisie du code
-async function saveHomeworkEntries() {
-    const tableBody = document.getElementById('table-body');
-    const rows = tableBody.getElementsByTagName('tr');
+// Fonction pour mettre à jour le tableau chaque jour
+async function updateHomeworkTable() {
+    const today = new Date();
 
-    for (const row of rows) {
-        const date = row.cells[0].textContent; // La première cellule est la date
-        const formattedDate = new Date(`${date.split('/')[2]}-${date.split('/')[1]}-${date.split('/')[0]}`).toISOString().split('T')[0];
+    // Vérifier si la première ligne correspond à hier
+    const firstRowDate = new Date();
+    firstRowDate.setDate(today.getDate() - 1); // Date du jour d'hier
+    const firstRow = document.getElementById('table-body').firstChild;
 
-        const subjects = ['francais', 'espagnol', 'litterature', 'histoire_geo', 'mathematiques', 'svt', 'physique_chimie', 'techno', 'ses', 'emc'];
-        const entry = { date: formattedDate }; // Préparer l'entrée avec la date
+    if (firstRow) {
+        const dateText = firstRow.firstChild.textContent;
+        const [day, month] = dateText.split('/');
+        const firstRowDateFormatted = ("0" + firstRowDate.getDate()).slice(-2) + "/" + ("0" + (firstRowDate.getMonth() + 1)).slice(-2);
 
-        for (let i = 0; i < subjects.length; i++) {
-            const input = row.cells[i + 1].querySelector('input'); // Chaque input
-            const activity = input.value;
+        // Si la première ligne correspond à la date d'hier, on la supprime et on ajoute une nouvelle ligne
+        if (dateText === firstRowDateFormatted) {
+            // Supprimer les données associées au jour
+            await deleteHomeworkRow(0);
 
-            // Ajouter la matière dans l'objet d'entrée
-            entry[subjects[i]] = activity;
-        }
+            // Faire monter les valeurs d'un cran
+            for (let i = 1; i < 31; i++) {
+                for (let j = 0; j < subjects.length; j++) {
+                    const oldDay = i - 1;
+                    const newDay = i;
+                    const input = document.querySelector(`input[data-day="${newDay}"][data-subject="${subjects[j]}"]`);
+                    const value = input ? input.value : '';
 
-        // Supprimer l'ancienne entrée pour cette date
-        await supabase.from('homework').delete().eq('date', formattedDate);
+                    // Sauvegarder les nouvelles données dans la base
+                    await saveHomeworkEntry(oldDay, subjects[j], value);
+                }
+            }
 
-        // Enregistrer la nouvelle entrée
-        const { data, error } = await supabase.from('homework').insert(entry);
-        
-        if (error) {
-            console.error('Erreur lors de l\'enregistrement des données:', error);
-        } else {
-            console.log('Données mises à jour:', data);
+            firstRow.remove(); // Supprimer la première ligne du tableau
+
+            // Ajouter une nouvelle ligne pour le 32ème jour (vide)
+            const lastRowDate = new Date();
+            lastRowDate.setDate(today.getDate() + 30); // La nouvelle date sera 30 jours après aujourd'hui
+            const newFormattedDate = ("0" + lastRowDate.getDate()).slice(-2) + "/" + ("0" + (lastRowDate.getMonth() + 1)).slice(-2);
+
+            const row = document.createElement('tr');
+            const dateCell = document.createElement('td');
+            dateCell.textContent = newFormattedDate;
+            row.appendChild(dateCell);
+
+            subjects.forEach(subject => {
+                const cell = document.createElement('td');
+                const input = document.createElement('input');
+                input.type = 'text';
+                input.disabled = true; // Désactivé par défaut
+                input.dataset.day = 30; // Dernière ligne
+                input.dataset.subject = subject;
+                cell.appendChild(input);
+                row.appendChild(cell);
+            });
+
+            document.getElementById('table-body').appendChild(row);
         }
     }
 }
 
-// Appeler la fonction pour générer les 31 lignes et vérifier les mises à jour quotidiennes
-window.onload = async function () {
-    await shiftHomeworkRows(); // Mise à jour quotidienne
-    generateHomeworkRows(); // Générer les lignes de devoirs
+// Appeler la fonction pour générer les 31 lignes au chargement de la page
+window.onload = function () {
+    generateHomeworkRows();
+    updateHomeworkTable();
 };
