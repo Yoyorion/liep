@@ -15,7 +15,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
     function populateTimetable(data) {
         const tableBody = document.getElementById('calendar-body');
-        tableBody.innerHTML = ''; 
+        tableBody.innerHTML = '';
 
         const days = ['lundi', 'mardi', 'mercredi', 'jeudi', 'vendredi'];
         const startHour = 8;
@@ -31,14 +31,14 @@ document.addEventListener('DOMContentLoaded', function () {
                 const cell = document.createElement('td');
                 const input = document.createElement('input');
                 input.type = 'text';
-                input.value = '';
+                input.value = '';  // Initialement vide
 
                 const entry = data.find(entry => entry.hour === hour && entry.day === day);
                 if (entry && entry.activity) {
                     input.value = entry.activity; 
                 }
 
-                input.disabled = true; 
+                input.disabled = true;  
                 input.setAttribute('data-hour', hour);
                 input.setAttribute('data-day', day);
 
@@ -72,7 +72,10 @@ document.addEventListener('DOMContentLoaded', function () {
     });
 
     async function updateTimetable(hour, day, activity) {
-        const { data, error } = await supabase.from('timetable').upsert({ hour, day, activity });
+        const { data, error } = await supabase
+            .from('timetable')  // Nom de la table
+            .upsert({ hour, day, activity });  // Mettre à jour ou insérer si la donnée n'existe pas
+
         if (error) {
             console.error('Erreur lors de la mise à jour des données:', error);
         } else {
