@@ -1,10 +1,11 @@
+// Vérification pour s'assurer que le DOM est entièrement chargé avant d'exécuter le script
 document.addEventListener('DOMContentLoaded', function () {
     // Initialisation de Supabase
-    const supabaseUrl = 'https://znwzdkgshtrickigthgd.supabase.co';  // Remplace par ton URL Supabase
-    const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inpud3pka2dzaHRyaWNraWd0aGdkIiwicm9sZSI6ImFub24iLCJpYXQiOjE3MjY4MjQyMzcsImV4cCI6MjA0MjQwMDIzN30.qGSSUfV7qjC0PUL3t_XVR3dXg6s5kRg0zwtQ2J1Gd5M';  // Remplace par ton anonpublic key
-    const supabase = window.supabase.createClient(supabaseUrl, supabaseKey);
+    const supabaseUrl = 'https://rmidxaibwmvbmtxpubgv.supabase.co';  // Remplace par ton URL Supabase
+    const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InJtaWR4YWlid212Ym10eHB1Ymd2Iiwicm9zZSI6ImFub24iLCJpYXQiOjE3MjY4NDczODEsImV4cCI6MjA0MjQyMzM4MX0.pj54J6XB1xcEbZJETypCttJEr9vnm6JDoUfwz2TV_F4';  // Remplace par ton anonpublic key
+    const supabase = window.supabase.createClient(supabaseUrl, supabaseKey);  // S'assurer que supabase est bien initialisé à partir de la bibliothèque
 
-    // Récupérer et afficher l'emploi du temps depuis la base de données
+    // Fonction pour récupérer et afficher l'emploi du temps depuis la base de données
     async function fetchTimetable() {
         const { data, error } = await supabase
             .from('timetable')  // Nom de ta table dans Supabase
@@ -40,20 +41,18 @@ document.addEventListener('DOMContentLoaded', function () {
                 const cell = document.createElement('td');
                 const input = document.createElement('input');
                 input.type = 'text';
+                input.value = '';  // Initialement vide
 
                 // Remplir les données si présentes dans la base
                 const entry = data.find(entry => entry.hour === hour && entry.day === day);
                 if (entry && entry.activity) {
                     input.value = entry.activity;  // Afficher l'activité si disponible
-                } else {
-                    input.value = '';  // Si pas de données, vide
                 }
 
                 input.disabled = true;  // Désactivé par défaut
                 input.setAttribute('data-hour', hour);
                 input.setAttribute('data-day', day);
 
-                // Ajouter chaque input au tableau
                 cell.appendChild(input);
                 row.appendChild(cell);
             }
@@ -66,26 +65,20 @@ document.addEventListener('DOMContentLoaded', function () {
     document.getElementById('code-input').addEventListener('input', function() {
         if (this.value === 'codecodecode') {
             const inputs = document.querySelectorAll('td input');
-            inputs.forEach(input => input.disabled = false);  // Activer tous les champs
+            inputs.forEach(input => {
+                input.disabled = false;  // Activer les champs
+                // Ajouter un listener pour chaque input modifiable
+                input.addEventListener('change', async function() {
+                    const hour = input.getAttribute('data-hour');
+                    const day = input.getAttribute('data-day');
+                    const newValue = input.value;
+
+                    // Enregistrer la modification dans la base de données
+                    await updateTimetable(hour, day, newValue);
+                });
+            });
             this.value = '';  // Effacer le champ après validation
             this.placeholder = 'Modification activée';
-        }
-    });
-
-    // Écouter la touche "d" pour effacer le contenu des cases et enregistrer dans la base de données
-    document.addEventListener('keydown', async function(event) {
-        if (event.key === 'd') {
-            const inputs = document.querySelectorAll('td input:not(:disabled)');  // Sélectionner uniquement les inputs modifiables
-            for (const input of inputs) {
-                const hour = input.getAttribute('data-hour');
-                const day = input.getAttribute('data-day');
-
-                // Vider le contenu
-                input.value = '';  
-                
-                // Enregistrer dans la base de données comme vide
-                await updateTimetable(hour, day, '');  // Enregistre une chaîne vide
-            }
         }
     });
 
@@ -93,9 +86,7 @@ document.addEventListener('DOMContentLoaded', function () {
     async function updateTimetable(hour, day, activity) {
         const { data, error } = await supabase
             .from('timetable')  // Nom de la table
-            .upsert({ hour, day, activity })  // Mettre à jour ou insérer si la donnée n'existe pas
-            .eq('hour', hour)
-            .eq('day', day);
+            .upsert({ hour, day, activity });  // Mettre à jour ou insérer si la donnée n'existe pas
 
         if (error) {
             console.error('Erreur lors de la mise à jour des données:', error);
