@@ -54,11 +54,11 @@ async function generateHomeworkRows() {
             input.addEventListener('change', async function () {
                 const newValue = input.value;
 
-                // Supprimer l'entrée existante avant d'insérer une nouvelle valeur
-                await deleteExistingEntry(formattedDate, subject);
+                // Supprimer l'ancienne entrée avant de mettre la nouvelle
+                await deleteExistingHomeworkEntry(formattedDate, subject);
 
-                // Enregistrer la nouvelle valeur
-                await insertNewEntry(formattedDate, subject, newValue);
+                // Enregistrer ou mettre à jour la nouvelle valeur
+                await insertNewHomeworkEntry(formattedDate, subject, newValue);
             });
 
             cell.appendChild(input);
@@ -70,29 +70,29 @@ async function generateHomeworkRows() {
     }
 }
 
-// Fonction pour supprimer une entrée existante
-async function deleteExistingEntry(date, subject) {
+// Fonction pour supprimer l'entrée existante pour une combinaison de date et matière
+async function deleteExistingHomeworkEntry(date, subject) {
     const { data, error } = await supabase
-        .from('homework')
-        .delete()
+        .from('homework')  // Remplace par le nom de ta table de devoirs
+        .delete()  // Supprimer l'entrée existante
         .eq('date', date)
-        .eq(subject, null); // Utiliser l'attribut de matière approprié
+        .not('subject', 'is', null);  // Assurer que la matière est bien prise en compte
 
     if (error) {
         console.error('Erreur lors de la suppression des données:', error);
     } else {
-        console.log('Données supprimées:', data);
+        console.log('Donnée supprimée:', data);
     }
 }
 
-// Fonction pour insérer une nouvelle entrée
-async function insertNewEntry(date, subject, activity) {
+// Fonction pour insérer la nouvelle entrée
+async function insertNewHomeworkEntry(date, subject, activity) {
     const { data, error } = await supabase
-        .from('homework')
-        .insert({ date, [subject]: activity }); // Insérer la nouvelle valeur
+        .from('homework')  // Remplace par le nom de ta table de devoirs
+        .upsert({ date, [subject]: activity });  // Insérer ou mettre à jour
 
     if (error) {
-        console.error('Erreur lors de l\'insertion des données:', error);
+        console.error('Erreur lors de la mise à jour des données:', error);
     } else {
         console.log('Nouvelle donnée insérée:', data);
     }
