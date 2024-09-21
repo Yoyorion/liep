@@ -62,8 +62,11 @@ document.addEventListener('DOMContentLoaded', function () {
 
                     console.log(`Tentative d'enregistrement : ${hour}, ${day}, ${newValue}`);  // Débogage
 
-                    // Enregistrer la modification dans la base de données
-                    await updateTimetable(hour, day, newValue);
+                    // Vérifier si une entrée existe déjà
+                    await deleteExistingEntry(hour, day);  // Supprimer l'entrée existante
+
+                    // Enregistrer la nouvelle valeur
+                    await insertNewEntry(hour, day, newValue);
                 });
             });
             this.value = ''; 
@@ -71,15 +74,31 @@ document.addEventListener('DOMContentLoaded', function () {
         }
     });
 
-    async function updateTimetable(hour, day, activity) {
+    // Fonction pour supprimer une entrée existante
+    async function deleteExistingEntry(hour, day) {
         const { data, error } = await supabase
-            .from('timetable')  // Nom de la table
-            .upsert({ hour, day, activity });  // Mettre à jour ou insérer si la donnée n'existe pas
+            .from('timetable')
+            .delete()  // Supprimer l'entrée existante
+            .eq('hour', hour)
+            .eq('day', day);
 
         if (error) {
-            console.error('Erreur lors de la mise à jour des données:', error);
+            console.error('Erreur lors de la suppression des données:', error);
         } else {
-            console.log('Données mises à jour:', data);
+            console.log('Données supprimées:', data);
+        }
+    }
+
+    // Fonction pour insérer une nouvelle entrée
+    async function insertNewEntry(hour, day, activity) {
+        const { data, error } = await supabase
+            .from('timetable')
+            .insert({ hour, day, activity });  // Insérer la nouvelle valeur
+
+        if (error) {
+            console.error('Erreur lors de l\'insertion des données:', error);
+        } else {
+            console.log('Nouvelle donnée insérée:', data);
         }
     }
 
