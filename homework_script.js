@@ -63,7 +63,7 @@ async function generateHomeworkRows() {
 
             if (error) {
                 console.error('Erreur lors de la récupération des données:', error);
-            } else if (homeworkData.length > 0) {
+            } else if (homeworkData && homeworkData.length > 0) {
                 input.value = homeworkData[0].value;
             }
 
@@ -83,21 +83,33 @@ document.getElementById('code-input').addEventListener('input', function () {
         inputs.forEach(input => input.disabled = false); // Activer les champs pour modification
         this.value = ''; // Effacer le code après validation
         this.placeholder = 'Modification activée';
+
+        // Ajouter un événement pour chaque champ pour sauvegarder après modification
+        inputs.forEach(input => {
+            input.addEventListener('change', function() {
+                const day = input.dataset.day;
+                const subject = input.dataset.subject;
+                const value = input.value;
+                saveHomeworkEntry(day, subject, value);
+            });
+        });
     }
 });
 
 // Fonction pour sauvegarder les modifications dans la base de données
 async function saveHomeworkEntry(day, subject, value) {
-    console.log(`Sauvegarde de la donnée - Jour : ${day}, Matière : ${subject}, Valeur : ${value}`);
+    console.log(`Tentative de sauvegarde - Jour : ${day}, Matière : ${subject}, Valeur : ${value}`);
     
     const { data, error } = await supabase
         .from('homework')
         .upsert({ day, subject, value });
 
     if (error) {
-        console.error('Erreur lors de la sauvegarde des données:', error);
-    } else {
+        console.error('Erreur lors de la sauvegarde des données:', error.message);
+    } else if (data) {
         console.log('Donnée sauvegardée avec succès:', data);
+    } else {
+        console.log('Aucune donnée sauvegardée');
     }
 }
 
@@ -110,6 +122,8 @@ async function deleteHomeworkRow(day) {
 
     if (error) {
         console.error('Erreur lors de la suppression des données:', error);
+    } else {
+        console.log('Données supprimées pour le jour:', day);
     }
 }
 
