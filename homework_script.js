@@ -76,7 +76,7 @@ async function deleteExistingEntry(date, subject) {
         .from('homework')
         .delete()
         .eq('date', date)
-        .eq('subject', subject); // Remplace 'subject' par le nom de la colonne pour la matière
+        .eq(subject, null); // Supprime l'entrée pour la matière correspondante
 
     if (error) {
         console.error('Erreur lors de la suppression des données:', error);
@@ -89,7 +89,7 @@ async function deleteExistingEntry(date, subject) {
 async function insertNewEntry(date, subject, activity) {
     const { data, error } = await supabase
         .from('homework')
-        .insert({ date, [subject]: activity }); // Insérer la nouvelle valeur
+        .upsert({ date, [subject]: activity }); // Insérer la nouvelle valeur
 
     if (error) {
         console.error('Erreur lors de l\'insertion des données:', error);
