@@ -31,7 +31,7 @@ async function generateHomeworkRows() {
         row.appendChild(dateCell);
 
         // Colonnes pour chaque matière
-        const subjects = ['Français', 'Espagnol', 'Littérature', 'Histoire-Géo', 'Mathématiques', 'SVT', 'Physique-Chimie', 'Techno', 'SES', 'EMC'];
+        const subjects = ['français', 'espagnol', 'littérature', 'histoire-géo', 'mathématiques', 'svt', 'physique-chimie', 'techno', 'ses', 'emc'];
         subjects.forEach(subject => {
             const cell = document.createElement('td');
             const input = document.createElement('input');
@@ -40,9 +40,9 @@ async function generateHomeworkRows() {
 
             // Remplir les données si présentes dans la base
             if (existingData && existingData.length > 0) {
-                const subjectEntry = existingData.find(entry => entry.subject === subject);
+                const subjectEntry = existingData[0][subject]; // Utiliser la colonne correspondante
                 if (subjectEntry) {
-                    input.value = subjectEntry.activity; // Afficher l'activité si disponible
+                    input.value = subjectEntry; // Afficher l'activité si disponible
                 }
             }
 
@@ -71,7 +71,7 @@ async function generateHomeworkRows() {
 async function updateHomeworkEntry(date, subject, activity) {
     const { data, error } = await supabase
         .from('homework')  // Remplace par le nom de ta table de devoirs
-        .upsert({ date, subject, activity });  // Insérer ou mettre à jour
+        .upsert({ date, [subject]: activity });  // Insérer ou mettre à jour
 
     if (error) {
         console.error('Erreur lors de la mise à jour des données:', error);
