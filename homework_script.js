@@ -1,6 +1,6 @@
 // Initialisation de Supabase
 const supabaseUrl = 'https://shcuezruvlenxmtsgxrs.supabase.co';
-const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InNoY3VlenJ1dmxlbnhtdHNneHJzIiwicm9sZSI6ImFub24iLCJpYXQiOjE3MjY4NDgzNzEsImV4cCI6MjA0MjQyNDM3MX0.OhHpA0eGnPzo2ouhsD979vXAY9dVDC5TiFDMg5JbWao';
+const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInNoY3VlenJ1dmxlbnhtdHNneHJzIiwicm9sZSI6ImFub24iLCJpYXQiOjE3MjY4NDgzNzEsImV4cCI6MjA0MjQyNDM3MX0.OhHpA0eGnPzo2ouhsD979vXAY9dVDC5TiFDMg5JbWao';
 const supabase = window.supabase.createClient(supabaseUrl, supabaseKey);
 
 // Variables globales pour les matières
@@ -9,20 +9,6 @@ const subjects = ['Français', 'Espagnol', 'Littérature', 'Histoire-Géo', 'Mat
 // Détection du mobile
 const isMobile = window.matchMedia("(max-width: 768px)").matches;
 let selectedSubject = subjects[0];  // Matière sélectionnée par défaut (Français)
-
-// Test de connexion à Supabase
-async function testSupabaseConnection() {
-    const { data, error } = await supabase
-        .from('homework')
-        .select('*')
-        .limit(1); // Juste pour vérifier la connexion
-
-    if (error) {
-        console.error('Erreur de connexion à Supabase:', error);
-    } else {
-        console.log('Connexion à Supabase réussie:', data);
-    }
-}
 
 // Fonction pour générer les lignes de devoirs en fonction de la matière sélectionnée
 async function generateHomeworkRows() {
@@ -46,29 +32,57 @@ async function generateHomeworkRows() {
         dateCell.textContent = formattedDate;
         row.appendChild(dateCell);
 
-        // Deuxième colonne: la matière sélectionnée
-        const subjectCell = document.createElement('td');
-        const input = document.createElement('input');
-        input.type = 'text';
-        input.disabled = true; // Les champs sont désactivés par défaut
-        input.dataset.day = i; // Stocker le numéro du jour
-        input.dataset.subject = selectedSubject; // Stocker la matière
+        if (isMobile) {
+            // Si mobile, afficher uniquement une colonne pour la matière sélectionnée
+            const subjectCell = document.createElement('td');
+            const input = document.createElement('input');
+            input.type = 'text';
+            input.disabled = true;
+            input.dataset.day = i;
+            input.dataset.subject = selectedSubject;
 
-        // Charger les données de la base pour ce jour et cette matière
-        const { data: homeworkData, error } = await supabase
-            .from('homework')
-            .select('value')
-            .eq('day', i)
-            .eq('subject', selectedSubject);
+            // Charger les données de la base pour ce jour et cette matière
+            const { data: homeworkData, error } = await supabase
+                .from('homework')
+                .select('value')
+                .eq('day', i)
+                .eq('subject', selectedSubject);
 
-        if (error) {
-            console.error('Erreur lors de la récupération des données:', error);
-        } else if (homeworkData && homeworkData.length > 0) {
-            input.value = homeworkData[0].value;
+            if (error) {
+                console.error('Erreur lors de la récupération des données:', error);
+            } else if (homeworkData && homeworkData.length > 0) {
+                input.value = homeworkData[0].value;
+            }
+
+            subjectCell.appendChild(input);
+            row.appendChild(subjectCell);
+        } else {
+            // Sinon afficher toutes les matières
+            subjects.forEach(subject => {
+                const subjectCell = document.createElement('td');
+                const input = document.createElement('input');
+                input.type = 'text';
+                input.disabled = true;
+                input.dataset.day = i;
+                input.dataset.subject = subject;
+
+                // Charger les données de la base pour ce jour et cette matière
+                const { data: homeworkData, error } = await supabase
+                    .from('homework')
+                    .select('value')
+                    .eq('day', i)
+                    .eq('subject', subject);
+
+                if (error) {
+                    console.error('Erreur lors de la récupération des données:', error);
+                } else if (homeworkData && homeworkData.length > 0) {
+                    input.value = homeworkData[0].value;
+                }
+
+                subjectCell.appendChild(input);
+                row.appendChild(subjectCell);
+            });
         }
-
-        subjectCell.appendChild(input);
-        row.appendChild(subjectCell);
 
         // Ajouter la ligne au tableau
         tableBody.appendChild(row);
@@ -130,7 +144,5 @@ document.getElementById('subject-select').addEventListener('change', function ()
 
 // Fonction pour initialiser la page
 window.onload = function () {
-    if (isMobile) {
-        generateHomeworkRows();
-    }
+    generateHomeworkRows();  // Affiche toutes les matières sur ordinateur et sélectionne la première sur mobile
 };
