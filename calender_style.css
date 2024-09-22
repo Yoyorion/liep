@@ -99,4 +99,9 @@ td input:disabled {
     th:first-child, td:first-child {
         width: 60px; /* Réduire la largeur pour mobile */
     }
+
+    /* Augmenter la taille du texte dans les inputs désactivés sur mobile */
+    td input:disabled {
+        font-size: 1.2em;  /* Texte plus grand pour les inputs désactivés sur mobile */
+    }
 }
