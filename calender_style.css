@@ -91,12 +91,32 @@ td input:disabled {
 
 /* Responsive pour mobile */
 @media (max-width: 768px) {
+
+    /* Masquer toutes les colonnes sauf la colonne des heures et la colonne du jour en cours */
+    th:not(:first-child), td:not(:first-child) {
+        display: none;
+    }
+
+    /* Afficher la colonne du jour en cours */
+    th.day-current, td.day-current {
+        display: table-cell;
+        width: 50%; /* Chaque colonne (heures + jour) prend 50% de la largeur */
+    }
+
+    /* Ajuster la largeur des colonnes des heures */
+    th:first-child, td:first-child {
+        width: 50%; /* La colonne des heures prend 50% de la largeur sur mobile */
+    }
+
+    /* Ajuster la taille du texte et le padding pour les mobiles */
     th, td {
         font-size: 0.9em;
         padding: 10px;
     }
 
-    th:first-child, td:first-child {
-        width: 60px; /* Réduire la largeur pour mobile */
+    /* Inputs ajustés pour mobiles */
+    td input {
+        font-size: 0.9em;
+        padding: 8px;
     }
 }
