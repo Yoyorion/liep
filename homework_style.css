@@ -12,11 +12,11 @@ body {
     min-height: 100vh;
 }
 
-/* Container pour le tableau pour gérer le défilement */
+/* Container pour le tableau */
 #homework {
     width: 100%;
     max-width: 1200px;
-    overflow-x: auto; 
+    overflow-x: auto;
     max-height: 80vh;
 }
 
@@ -30,27 +30,14 @@ table {
     overflow-y: auto;
 }
 
-/* Colonne 'Date' */
+/* Largeur fixe pour la colonne Date */
 th:first-child, td:first-child {
     width: 100px;
 }
 
-/* Colonne 'Matière' */
-th:last-child, td:last-child {
-    width: auto;
-}
-
-/* Menu déroulant */
-#subject-select-container {
-    display: none; /* Masqué sur ordinateur */
-    margin-bottom: 20px;
-}
-
-/* Afficher le menu déroulant sur mobile */
-@media (max-width: 768px) {
-    #subject-select-container {
-        display: block;
-    }
+/* Largeur fixe pour les autres colonnes */
+th:not(:first-child), td:not(:first-child) {
+    width: 150px;
 }
 
 /* Style des cellules et des en-têtes */
@@ -65,6 +52,14 @@ th, td {
     height: auto;
 }
 
+/* Style de l'en-tête avec texte */
+th {
+    background-color: rgba(0, 0, 0, 0.8);
+    color: #fff;
+    text-align: center;
+}
+
+/* Les inputs à l'intérieur des cellules */
 td input {
     width: 100%;
     padding: 8px;
@@ -79,4 +74,22 @@ td input {
 td input:disabled {
     background-color: #e0e0e0;
     color: #777;
+}
+
+/* Menu déroulant pour mobile */
+#subject-select-container {
+    display: none; /* Masqué par défaut */
+}
+
+/* Afficher le menu déroulant sur mobile */
+@media (max-width: 768px) {
+    #subject-select-container {
+        display: block;
+        margin-bottom: 20px;
+    }
+
+    /* Style du tableau pour mobile : deux colonnes seulement */
+    th:not(:first-child), td:not(:first-child) {
+        display: none;
+    }
 }
