@@ -80,7 +80,7 @@ td input {
 
 td input:disabled {
     background-color: #e0e0e0;
-    color: #777;
+    color: #000000;
 }
 
 /* Suppression de display:block pour garder le tableau intact */
