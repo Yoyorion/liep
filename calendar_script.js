@@ -48,16 +48,31 @@ function populateTimetable(data) {
     }
 }
 
-// Fonction pour générer l'emploi du temps uniquement pour le jour actuel sur mobile (sans la colonne des heures)
+// Fonction pour générer l'emploi du temps uniquement pour le jour actuel sur mobile (en affichant le jour dans l'en-tête)
 function generateSingleDayTimetable(dayIndex, data) {
+    const tableHead = document.getElementById('calendar-head');
     const tableBody = document.getElementById('calendar-body');
     const dayName = days[dayIndex]; // Obtenir le nom du jour (ex : 'lundi')
+
+    // Effacer tout contenu de l'en-tête précédent
+    tableHead.innerHTML = '';
+
+    // Générer l'en-tête avec le nom du jour actuel
+    const headerRow = document.createElement('tr');
+    
+    // Créer la cellule d'en-tête du jour actuel
+    const dayHeaderCell = document.createElement('th');
+    dayHeaderCell.textContent = dayName.charAt(0).toUpperCase() + dayName.slice(1); // Afficher le jour avec majuscule
+    headerRow.appendChild(dayHeaderCell);
+
+    // Ajouter la ligne d'en-tête au tableau
+    tableHead.appendChild(headerRow);
 
     // Générer les lignes pour chaque heure du jour en cours (sans afficher la colonne des heures)
     for (let hour = startHour; hour <= endHour; hour++) {
         const row = document.createElement('tr');
 
-        // Ajouter la colonne unique pour le jour en cours (sans colonne des heures)
+        // Ajouter la colonne unique pour le jour en cours
         const cell = document.createElement('td');
         const input = document.createElement('input');
         input.type = 'text';
@@ -82,7 +97,29 @@ function generateSingleDayTimetable(dayIndex, data) {
 
 // Fonction pour générer le tableau complet sur ordinateur
 function generateFullTimetable(data) {
+    const tableHead = document.getElementById('calendar-head');
     const tableBody = document.getElementById('calendar-body');
+
+    // Effacer tout contenu précédent
+    tableHead.innerHTML = '';
+    tableBody.innerHTML = '';
+
+    // Générer l'en-tête des jours
+    const headerRow = document.createElement('tr');
+
+    // En-tête des heures
+    const hourHeaderCell = document.createElement('th');
+    hourHeaderCell.textContent = 'Heure';
+    headerRow.appendChild(hourHeaderCell);
+
+    // En-tête des jours
+    days.forEach(day => {
+        const dayHeaderCell = document.createElement('th');
+        dayHeaderCell.textContent = day.charAt(0).toUpperCase() + day.slice(1); // Afficher le jour avec majuscule
+        headerRow.appendChild(dayHeaderCell);
+    });
+
+    tableHead.appendChild(headerRow);
 
     // Générer les lignes pour chaque heure et jour
     for (let hour = startHour; hour <= endHour; hour++) {
