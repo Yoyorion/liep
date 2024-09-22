@@ -48,45 +48,6 @@ function populateTimetable(data) {
     }
 }
 
-// Fonction pour générer l'emploi du temps uniquement pour le jour actuel sur mobile
-function generateSingleDayTimetable(dayIndex, data) {
-    const tableBody = document.getElementById('calendar-body');
-    const dayName = days[dayIndex]; // Obtenir le nom du jour (ex : 'lundi')
-
-    // Générer les lignes pour chaque heure du jour en cours
-    for (let hour = startHour; hour <= endHour; hour++) {
-        const row = document.createElement('tr');
-        
-        // Ajouter la colonne des heures
-        const hourCell = document.createElement('td');
-        hourCell.textContent = `${hour}:00`;
-        hourCell.classList.add('hour-cell'); // Ajouter une classe pour le style
-        row.appendChild(hourCell);
-
-        // Ajouter la colonne unique pour le jour en cours
-        const cell = document.createElement('td');
-        const input = document.createElement('input');
-        input.type = 'text';
-        input.value = '';  // Initialement vide
-
-        // Remplir les données si présentes dans la base pour ce jour
-        const entry = data.find(entry => entry.hour === hour && entry.day === dayName);
-        if (entry && entry.activity) {
-            input.value = entry.activity;  // Afficher l'activité si disponible
-        }
-
-        input.disabled = true;  // Désactivé par défaut
-        input.setAttribute('data-hour', hour);
-        input.setAttribute('data-day', dayName);
-
-        cell.appendChild(input);
-        cell.classList.add('day-cell'); // Ajouter une classe pour le style
-        row.appendChild(cell);
-
-        tableBody.appendChild(row);
-    }
-}
-
 // Fonction pour générer le tableau complet sur ordinateur
 function generateFullTimetable(data) {
     const tableBody = document.getElementById('calendar-body');
@@ -120,6 +81,44 @@ function generateFullTimetable(data) {
             cell.appendChild(input);
             row.appendChild(cell);
         }
+
+        tableBody.appendChild(row);
+    }
+}
+
+// Fonction pour générer l'emploi du temps uniquement pour le jour actuel sur mobile
+function generateSingleDayTimetable(dayIndex, data) {
+    const tableBody = document.getElementById('calendar-body');
+    const dayName = days[dayIndex]; // Obtenir le nom du jour (ex : 'lundi')
+
+    // Générer les lignes pour chaque heure du jour en cours
+    for (let hour = startHour; hour <= endHour; hour++) {
+        const row = document.createElement('tr');
+        
+        // Ajouter la colonne des heures
+        const hourCell = document.createElement('td');
+        hourCell.textContent = `${hour}:00`;
+        hourCell.classList.add('hour-cell'); // Ajouter une classe pour le style
+        row.appendChild(hourCell);
+
+        // Ajouter la colonne unique pour le jour en cours
+        const cell = document.createElement('td');
+        const input = document.createElement('input');
+        input.type = 'text';
+        input.value = '';  // Initialement vide
+
+        // Remplir les données si présentes dans la base pour ce jour
+        const entry = data.find(entry => entry.hour === hour && entry.day === dayName);
+        if (entry && entry.activity) {
+            input.value = entry.activity;  // Afficher l'activité si disponible
+        }
+
+        input.disabled = true;  // Désactivé par défaut
+        input.setAttribute('data-hour', hour);
+        input.setAttribute('data-day', dayName);
+
+        cell.appendChild(input);
+        row.appendChild(cell);
 
         tableBody.appendChild(row);
     }
