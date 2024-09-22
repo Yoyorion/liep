@@ -179,16 +179,30 @@ document.getElementById('code-input').addEventListener('input', function() {
 
 // Fonction pour mettre à jour la base de données avec les modifications
 async function updateTimetable(hour, day, activity) {
-    const { data, error } = await supabase
-        .from('timetable')  // Nom de la table
-        .upsert({ hour, day, activity })  // Mettre à jour ou insérer si la donnée n'existe pas
-        .eq('hour', hour)
-        .eq('day', day);
+    try {
+        // Supprimer l'entrée existante avec le même hour et day
+        const { error: deleteError } = await supabase
+            .from('timetable')
+            .delete()
+            .eq('hour', hour)
+            .eq('day', day);
 
-    if (error) {
-        console.error('Erreur lors de la mise à jour des données:', error);
-    } else {
+        if (deleteError) {
+            throw deleteError;
+        }
+
+        // Insérer la nouvelle entrée avec hour, day et activity
+        const { data, error: insertError } = await supabase
+            .from('timetable')
+            .insert({ hour, day, activity });
+
+        if (insertError) {
+            throw insertError;
+        }
+
         console.log('Données mises à jour:', data);
+    } catch (error) {
+        console.error('Erreur lors de la mise à jour des données:', error);
     }
 }
 
