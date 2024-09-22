@@ -1,6 +1,6 @@
 // Initialisation de Supabase
-const supabaseUrl = 'https://znwzdkgshtrickigthgd.supabase.co';
-const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inpud3pka2dzaHRyaWNraWd0aGdkIiwicm9sZSI6ImFub24iLCJpYXQiOjE3MjY4MjQyMzcsImV4cCI6MjA0MjQwMDIzN30.qGSSUfV7qjC0PUL3t_XVR3dXg6s5kRg0zwtQ2J1Gd5M';
+const supabaseUrl = 'https://znwzdkgshtrickigthgd.supabase.co';  // Remplace par ton URL Supabase
+const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inpud3pka2dzaHRyaWNraWd0aGdkIiwicm9sZSI6ImFub24iLCJpYXQiOjE3MjY4MjQyMzcsImV4cCI6MjA0MjQwMDIzN30.qGSSUfV7qjC0PUL3t_XVR3dXg6s5kRg0zwtQ2J1Gd5M';  // Remplace par ton anonpublic key
 const supabase = window.supabase.createClient(supabaseUrl, supabaseKey);
 
 const days = ['lundi', 'mardi', 'mercredi', 'jeudi', 'vendredi'];
@@ -48,6 +48,45 @@ function populateTimetable(data) {
     }
 }
 
+// Fonction pour générer l'emploi du temps uniquement pour le jour actuel sur mobile
+function generateSingleDayTimetable(dayIndex, data) {
+    const tableBody = document.getElementById('calendar-body');
+    const dayName = days[dayIndex]; // Obtenir le nom du jour (ex : 'lundi')
+
+    // Générer les lignes pour chaque heure du jour en cours
+    for (let hour = startHour; hour <= endHour; hour++) {
+        const row = document.createElement('tr');
+        
+        // Ajouter la colonne des heures
+        const hourCell = document.createElement('td');
+        hourCell.textContent = `${hour}:00`;
+        hourCell.classList.add('hour-cell'); // Ajouter une classe pour le style
+        row.appendChild(hourCell);
+
+        // Ajouter la colonne unique pour le jour en cours
+        const cell = document.createElement('td');
+        const input = document.createElement('input');
+        input.type = 'text';
+        input.value = '';  // Initialement vide
+
+        // Remplir les données si présentes dans la base pour ce jour
+        const entry = data.find(entry => entry.hour === hour && entry.day === dayName);
+        if (entry && entry.activity) {
+            input.value = entry.activity;  // Afficher l'activité si disponible
+        }
+
+        input.disabled = true;  // Désactivé par défaut
+        input.setAttribute('data-hour', hour);
+        input.setAttribute('data-day', dayName);
+
+        cell.appendChild(input);
+        cell.classList.add('day-cell'); // Ajouter une classe pour le style
+        row.appendChild(cell);
+
+        tableBody.appendChild(row);
+    }
+}
+
 // Fonction pour générer le tableau complet sur ordinateur
 function generateFullTimetable(data) {
     const tableBody = document.getElementById('calendar-body');
@@ -81,43 +120,6 @@ function generateFullTimetable(data) {
             cell.appendChild(input);
             row.appendChild(cell);
         }
-
-        tableBody.appendChild(row);
-    }
-}
-
-// Fonction pour générer l'emploi du temps uniquement pour le jour actuel sur mobile
-function generateSingleDayTimetable(dayIndex, data) {
-    const tableBody = document.getElementById('calendar-body');
-    const dayName = days[dayIndex]; // Obtenir le nom du jour (ex : 'lundi')
-
-    // Générer les lignes pour chaque heure du jour en cours
-    for (let hour = startHour; hour <= endHour; hour++) {
-        const row = document.createElement('tr');
-        
-        // Ajouter la colonne des heures
-        const hourCell = document.createElement('td');
-        hourCell.textContent = `${hour}:00`;
-        row.appendChild(hourCell);
-
-        // Ajouter la colonne unique pour le jour en cours
-        const cell = document.createElement('td');
-        const input = document.createElement('input');
-        input.type = 'text';
-        input.value = '';  // Initialement vide
-
-        // Remplir les données si présentes dans la base pour ce jour
-        const entry = data.find(entry => entry.hour === hour && entry.day === dayName);
-        if (entry && entry.activity) {
-            input.value = entry.activity;  // Afficher l'activité si disponible
-        }
-
-        input.disabled = true;  // Désactivé par défaut
-        input.setAttribute('data-hour', hour);
-        input.setAttribute('data-day', dayName);
-
-        cell.appendChild(input);
-        row.appendChild(cell);
 
         tableBody.appendChild(row);
     }
