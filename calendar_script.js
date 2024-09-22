@@ -97,7 +97,7 @@ function generateSingleDayTimetable(dayIndex, data) {
 
 // Fonction pour générer le tableau complet sur ordinateur
 function generateFullTimetable(data) {
-    const tableHead = document.getElementById('calendar-head');
+    const tableHead = document.querySelector('thead');
     const tableBody = document.getElementById('calendar-body');
 
     // Effacer tout contenu précédent
