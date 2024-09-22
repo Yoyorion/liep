@@ -102,6 +102,6 @@ td input:disabled {
 
     /* Augmenter la taille du texte dans les inputs désactivés sur mobile */
     td input:disabled {
-        font-size: 1.2em;  /* Texte plus grand pour les inputs désactivés sur mobile */
+        font-size: 2em;  /* Texte plus grand pour les inputs désactivés sur mobile */
     }
 }
