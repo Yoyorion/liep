@@ -50,7 +50,7 @@ function populateTimetable(data) {
 
 // Fonction pour générer l'emploi du temps uniquement pour le jour actuel sur mobile (en affichant le jour dans l'en-tête)
 function generateSingleDayTimetable(dayIndex, data) {
-    const tableHead = document.getElementById('calendar-head');
+    const tableHead = document.querySelector('thead');
     const tableBody = document.getElementById('calendar-body');
     const dayName = days[dayIndex]; // Obtenir le nom du jour (ex : 'lundi')
 
