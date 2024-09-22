@@ -74,7 +74,7 @@ td input {
 /* Inputs désactivés */
 td input:disabled {
     background-color: rgba(255, 255, 255, 0.05);
-    color: #aaa;
+    color: #0;
 }
 
 /* Case pour entrer le code */
