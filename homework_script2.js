@@ -1,6 +1,6 @@
 // Initialisation de Supabase
-const supabaseUrl = 'https://shfodcxperklscksanzf.supabase.co';
-const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InNoZm9kY3hwZXJrbHNja3NhbnpmIiwicm9sZSI6ImFub24iLCJpYXQiOjE3MjY5MzgxMTUsImV4cCI6MjA0MjUxNDExNX0.tS7bBXLfrYOXxbr_yCuwQNjAOlXPO2LAgZYCoEOVM-Y';
+const supabaseUrl = 'https://kgvhuegakcuvatkffcnc.supabase.co';
+const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imtndmh1ZWdha2N1dmF0a2ZmY25jIiwicm9sZSI6ImFub24iLCJpYXQiOjE3MjY5MzgzODQsImV4cCI6MjA0MjUxNDM4NH0.mbcvOzJvyfKPR8HAEro-0tABfVdXwT7StILGhv_kcnc';
 const supabase = window.supabase.createClient(supabaseUrl, supabaseKey);
 
 // Test de connexion à Supabase
@@ -98,7 +98,7 @@ document.getElementById('code-input').addEventListener('input', function () {
 
 // Fonction pour sauvegarder les modifications dans la base de données
 async function saveHomeworkEntry(day, subject, value) {
-    console.log(Tentative de sauvegarde - Jour : ${day}, Matière : ${subject}, Valeur : ${value});
+    console.log(`Tentative de sauvegarde - Jour : ${day}, Matière : ${subject}, Valeur : ${value}`);
 
     // Supprimer toute entrée existante pour ce jour et cette matière
     const { error: deleteError } = await supabase
@@ -110,7 +110,7 @@ async function saveHomeworkEntry(day, subject, value) {
     if (deleteError) {
         console.error('Erreur lors de la suppression de l\'ancienne entrée:', deleteError.message);
     } else {
-        console.log(Ancienne donnée supprimée pour Jour : ${day}, Matière : ${subject});
+        console.log(`Ancienne donnée supprimée pour Jour : ${day}, Matière : ${subject}`);
     }
 
     // Insérer la nouvelle entrée
@@ -165,7 +165,7 @@ async function updateHomeworkTable() {
                 for (let j = 0; j < subjects.length; j++) {
                     const oldDay = i - 1;
                     const newDay = i;
-                    const input = document.querySelector(input[data-day="${newDay}"][data-subject="${subjects[j]}"]);
+                    const input = document.querySelector(`input[data-day="${newDay}"][data-subject="${subjects[j]}"]`);
                     const value = input ? input.value : '';
 
                     // Sauvegarder les nouvelles données dans la base
