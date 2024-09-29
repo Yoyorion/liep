@@ -1,6 +1,6 @@
 // Initialisation de Supabase
-const supabaseUrl = 'https://shcuezruvlenxmtsgxrs.supabase.co';
-const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InNoY3VlenJ1dmxlbnhtdHNneHJzIiwicm9sZSI6ImFub24iLCJpYXQiOjE3MjY4NDgzNzEsImV4cCI6MjA0MjQyNDM3MX0.OhHpA0eGnPzo2ouhsD979vXAY9dVDC5TiFDMg5JbWao';
+const supabaseUrl = 'https://shfodcxperklscksanzf.supabase.co';
+const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InNoZm9kY3hwZXJrbHNja3NhbnpmIiwicm9sZSI6ImFub24iLCJpYXQiOjE3MjY5MzgxMTUsImV4cCI6MjA0MjUxNDExNX0.tS7bBXLfrYOXxbr_yCuwQNjAOlXPO2LAgZYCoEOVM-Y';
 const supabase = window.supabase.createClient(supabaseUrl, supabaseKey);
 
 // Test de connexion à Supabase
