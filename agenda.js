@@ -20,7 +20,6 @@ async function recupererEmploiDuTemps() {
     const emploiDuTempsTable = document.querySelector('#emploi-du-temps tbody');
     const emploiDuTempsHeader = document.querySelector('#emploi-du-temps thead');
     
-    // Effacer les anciennes données
     emploiDuTempsTable.innerHTML = '';
     emploiDuTempsHeader.innerHTML = '';
 
@@ -41,7 +40,7 @@ async function recupererEmploiDuTemps() {
     jours.forEach(jour => {
         const jourHeader = document.createElement('th');
         jourHeader.textContent = jour;
-        jourHeader.dataset.jour = jour.toLowerCase(); // Marque chaque jour
+        jourHeader.dataset.jour = jour.toLowerCase();
         headerRow.appendChild(jourHeader);
     });
 
@@ -52,7 +51,7 @@ async function recupererEmploiDuTemps() {
         const row = document.createElement('tr');
         const heureCell = document.createElement('td');
         heureCell.textContent = heure;
-        heureCell.classList.add('heure'); // Toujours visible
+        heureCell.classList.add('heure');
         row.appendChild(heureCell);
 
         jours.forEach(jour => {
