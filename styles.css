@@ -140,19 +140,7 @@ tr:hover {
 
 /* styles.css ou agenda.css */
 
-/* Sur écrans de petite taille, masquez toutes les colonnes de jour par défaut */
-@media (max-width: 768px) {
-    th, td {
-        display: none;
-    }
-
-    /* Toujours afficher la colonne des heures */
-    .heure {
-        display: table-cell;
-    }
-
-    /* Affiche seulement la colonne actuelle */
-    .current-day {
-        display: table-cell;
-    }
+/* Toujours afficher la colonne des heures */
+.heure {
+    width: 10%;
 }
