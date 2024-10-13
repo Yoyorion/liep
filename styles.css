@@ -140,7 +140,27 @@ tr:hover {
 
 /* styles.css ou agenda.css */
 
-/* Toujours afficher la colonne des heures */
-.heure {
-    width: 10%;
+/* Réduit la largeur des colonnes sur mobile */
+@media (max-width: 768px) {
+    table {
+        width: 100%;
+        table-layout: fixed;
+    }
+
+    th, td {
+        display: none;
+        width: 100%;
+    }
+
+    /* Toujours afficher la colonne des heures */
+    .heure {
+        display: table-cell;
+        width: 25%;
+    }
+
+    /* Afficher seulement la colonne actuelle */
+    .current-day {
+        display: table-cell;
+        width: 75%;
+    }
 }
