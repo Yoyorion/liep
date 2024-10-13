@@ -31,14 +31,14 @@ async function recupererEmploiDuTemps() {
         const row = document.createElement('tr');
         const heureCell = document.createElement('td');
         heureCell.textContent = heure;
-        heureCell.classList.add('heure'); // Classe pour toujours afficher les heures sur mobile
+        heureCell.classList.add('heure'); // Colonne des heures, toujours visible
         row.appendChild(heureCell);
 
         jours.forEach(jour => {
             const cell = document.createElement('td');
             const cours = data.find(c => c.jour === jour && c.heure_debut === heure + ':00');
             cell.textContent = cours ? cours.matiere : '';
-            cell.classList.add(jour.toLowerCase()); // Ajoute une classe pour chaque jour
+            cell.dataset.jour = jour.toLowerCase(); // Marquer chaque cellule avec un attribut data-jour
             row.appendChild(cell);
         });
         
@@ -60,14 +60,31 @@ function afficherJourActuel() {
         jourColonne = jours[jourActuel - 1];
     }
 
-    // Cacher toutes les colonnes sauf celle du jour actuel sur mobile
-    if (window.innerWidth <= 768) {
-        const allDays = ['lundi', 'mardi', 'mercredi', 'jeudi', 'vendredi'];
-        allDays.forEach(day => {
-            const dayCells = document.querySelectorAll(`.${day}`);
-            dayCells.forEach(cell => {
-                cell.classList.toggle('current-day', day === jourColonne);
-            });
+    const toutesLesColonnes = document.querySelectorAll('td[data-jour], th[data-jour]');
+    
+    if (window.innerWidth <= 768) { // Si la largeur est mobile
+        toutesLesColonnes.forEach(cell => {
+            if (cell.dataset.jour === jourColonne) {
+                cell.style.display = 'table-cell';
+            } else {
+                cell.style.display = 'none';
+            }
+        });
+
+        // Masquer les en-têtes autres que les heures et le jour actuel
+        const toutesLesEntetes = document.querySelectorAll('th');
+        toutesLesEntetes.forEach(header => {
+            if (header.classList.contains(jourColonne) || header.classList.contains('heure')) {
+                header.style.display = 'table-cell';
+            } else {
+                header.style.display = 'none';
+            }
+        });
+
+    } else {
+        // Si l'écran est plus large, afficher toutes les colonnes
+        toutesLesColonnes.forEach(cell => {
+            cell.style.display = 'table-cell';
         });
     }
 }
