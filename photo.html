@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <title>Galerie de Photos et Vidéos</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="photo.css">
+</head>
+<body>
+    <nav>
+        <ul>
+            <li><a href="index.html">Accueil</a></li>
+            <li><a href="dashboard.html">Tableau de Bord</a></li>
+            <li><a href="agenda.html">Agenda</a></li>
+            <li><a href="annonces.html">Annonces</a></li>
+            <li><a href="photo.html">Galerie</a></li>
+        </ul>
+    </nav>
+
+    <div class="container">
+        <h1>Galerie de Photos et Vidéos</h1>
+        <div id="gallery">
+            <!-- Les images et vidéos seront affichées ici -->
+        </div>
+    </div>
+
+    <div id="lightbox" class="lightbox">
+        <span class="close">&times;</span>
+        <img class="lightbox-content" id="lightbox-image">
+        <video class="lightbox-content" id="lightbox-video" controls></video>
+    </div>
+
+    <script src="photo.js"></script>
+</body>
+</html>
