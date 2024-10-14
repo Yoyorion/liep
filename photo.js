@@ -1,5 +1,4 @@
 // photo.js
-
 document.addEventListener('DOMContentLoaded', async function() {
     const gallery = document.getElementById('gallery');
     const lightbox = document.getElementById('lightbox');
@@ -10,6 +9,8 @@ document.addEventListener('DOMContentLoaded', async function() {
     try {
         const response = await fetch('/.netlify/functions/getFilesimages');
         const files = await response.json();
+
+        console.log(files); // Débogage : vérifier le format de `files`
 
         files.forEach(file => {
             const isVideo = file.endsWith('.mp4') || file.endsWith('.avi') || file.endsWith('.mov');
