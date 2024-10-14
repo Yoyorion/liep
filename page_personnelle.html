@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <title>Espace Personnel</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <nav>
+        <ul>
+            <li><a href="agenda.html">Agenda</a></li>
+            <li><a href="annonces.html">Annonces</a></li>
+            <li><a href="contact.html">Contacts</a></li>
+            <li><a href="fiches.html">Fiches</a></li>
+            <li><a href="photo.html">Galerie</a></li>
+            <li><a href="dashboard.html">Accueil</a></li>
+        </ul>
+    </nav>
+
+    <div class="container"></div>
+        <h1>Votre Espace Personnel</h1>
+        
+        <!-- Formulaire de Texte -->
+        <form id="text-form">
+            <textarea id="texte" placeholder="Entrez ici votre texte sécurisé..." rows="5" required></textarea>
+            <button type="submit">Enregistrer</button>
+        </form>
+        <div id="message"></div>
+
+        <!-- Formulaire de Téléchargement d'Images -->
+        <form id="upload-form">
+            <input type="file" id="image-upload" accept="image/*" required>
+            <button type="submit">Télécharger Image</button>
+        </form>
+        <div id="upload-message"></div>
+
+        <!-- Section pour Afficher les Images -->
+        <div id="gallery">
+            <h2>Vos Images</h2>
+            <div id="images-container"></div>
+        </div>
+
+        <!-- Ajouter ceci dans le body de page_personnelle.html -->
+        <div id="image-modal" class="modal">
+            <span class="close" id="close-modal">&times;</span>
+            <img id="modal-image" src="" alt="Aperçu de l'image">
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js"></script>
+    <script src="supabaseClient.js"></script>
+    <script src="page_personnelle.js"></script>
+</body>
+</html>
