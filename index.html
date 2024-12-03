@@ -1,21 +1,93 @@
 <!DOCTYPE html>
-<html lang="fr">
+<html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <title>Victor Cabarrocas</title>
-  <link rel="stylesheet" href="stylesINDEX.css">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Professional websites tailored for businesses.">
+    <title>VL WebBuilder</title>
+    <link rel="stylesheet" href="styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;700&display=swap" rel="stylesheet">
+    <!-- Importation du SDK EmailJS -->
+    <script src="https://cdn.emailjs.com/dist/email.min.js"></script>
 </head>
 <body>
-    <div class="logo-container">
-        <img src="logo.WEBP" alt="Logo Seconde 5" class="logo">
-    </div>
-  <div class="container">
-    <form id="login-form">
-      <label for="nom"><h3>Veuillez entrer votre nom :</h3></label>
-      <input type="text" id="nom" required>
-      <button type="submit">Continuer</button>
-    </form>
-  </div>
-  <script src="script.js"></script>
+    <!-- Navigation Bar -->
+    <header>
+        <nav class="navbar">
+            <div class="logo">VL WebBuilder</div>
+            <ul class="nav-links">
+                <li><a href="#services">Services</a></li>
+                <li><a href="#portfolio">Portfolio</a></li>
+                <li><a href="#about">Infos</a></li>
+                <li><a href="#contact">Contact</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <!-- Hero Section -->
+    <section id="hero">
+        <div class="hero-content">
+            <h1>Votre Site, Votre Vision</h1>
+            <p>Nous transformons votre imagination en site internet !</p>
+            <a href="#contact" class="cta-btn">Commencez !</a>
+        </div>
+    </section>
+
+    <!-- Services Section -->
+    <section id="services">
+        <h2>Ce que nous offrons</h2>
+        <div class="service-cards">
+            <div class="card">
+                <h3>Designe</h3>
+                <p>Designe unique pour votre entreprise.</p>
+            </div>
+            <div class="card">
+                <h3>Business</h3>
+                <p>Solutions spécialisées en fonction de votre secteur.</p>
+            </div>
+            <div class="card">
+                <h3>Assurance</h3>
+                <p>Pas de frais si le site ne vous plaît pas.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Portfolio Section -->
+    <section id="portfolio">
+        <h2>Nos projets :</h2>
+        <div class="portfolio-grid">
+            <p>Pour l'instant, nous n'avons pas encore fini de projets !</p>
+        </div>
+    </section>
+
+    <!-- About Section -->
+    <section id="about">
+        <h2>Qui nous sommes ?</h2>
+        <p>Nous sommes une agence de développement de sites internet, en fonction de vos envies, de vos besoins et de votre secteur d'activité.</p>
+    </section>
+
+    <!-- Contact Section -->
+    <section id="contact">
+        <h2>Contactez-nous !</h2>
+        <form id="contact-form">
+            <div class="form-group">
+                <input type="text" id="name" name="name" placeholder="Votre Nom" required>
+            </div>
+            <div class="form-group">
+                <input type="email" id="email" name="email" placeholder="Votre Email" required>
+            </div>
+            <div class="form-group">
+                <textarea id="message" name="message" rows="5" placeholder="Votre Message" required></textarea>
+            </div>
+            <button type="submit" id="send-email" class="cta-btn">Envoyer le message</button>
+        </form>
+    </section>
+
+    <!-- Footer -->
+    <footer>
+        <p>&copy; 2024 VL WebBuilder. Tous droits réservés.</p>
+    </footer>
+
+    <script src="script.js"></script>
 </body>
 </html>
