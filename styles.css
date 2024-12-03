@@ -1,219 +1,245 @@
-/* Global styles for enhanced design with gradient background */
+/* Global Styles */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
 
 body {
-    margin: 0;
     font-family: 'Roboto', sans-serif;
-    background: url('background/12.jpeg') no-repeat center center fixed;
-    background-size: cover;
-    color: #ffffff;
-    background-attachment: fixed;
-}
-
-.h3 {
-    color: #000000;
-}
-
-h1, h2 {
-    color: #ffffff;
+    line-height: 1.6;
+    color: #333;
+    background-color: #f7f9fc;
+    padding: 0;
+    margin: 0;
 }
 
 .container {
+    width: 90%;
     max-width: 1200px;
-    margin: auto;
-    padding: 20px;
+    margin: 0 auto;
 }
 
-nav {
-    background-color: #343a40;
-    padding: 15px;
+/* Header */
+header {
+    background: #2575fc;
+    padding: 1rem 0;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    position: sticky;
+    top: 0;
+    z-index: 1000;
 }
 
-nav ul {
-    list-style-type: none;
-    padding: 0;
-    margin: 0;
-    text-align: center;
-}
-
-nav ul li {
-    display: inline;
-    margin-right: 20px;
-}
-
-nav ul li a {
-    color: #ffffff;
-    text-decoration: none;
-    font-weight: bold;
-    transition: color 0.3s ease;
-}
-
-nav ul li a:hover {
-    color: #17a2b8;
+.navbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
 }
 
 .logo {
-    width: 150px;
-    border-radius: 50%;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-}
-
-form {
-    max-width: 500px;
-    margin: 20px auto;
-    background: #ffffff;
-    padding: 30px;
-    border-radius: 8px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    display: flex;
-    flex-direction: column;
-    align-items: stretch;
-    gap: 10px;
-}
-
-form label {
-    margin-bottom: 5px;
+    color: #fff;
+    font-size: 1.5rem;
     font-weight: bold;
 }
 
-.form-group {
+.nav-links {
+    list-style: none;
     display: flex;
-    gap: 10px;
+    gap: 20px;
 }
 
-form input, form button {
-    padding: 12px;
-    border-radius: 6px;
-}
-
-form input {
-    flex: 1;
-}
-
-form button {
-    background-color: #007bff;
-    color: #ffffff;
-    border: none;
-    font-size: 16px;
-    transition: background-color 0.3s ease;
-}
-
-form button:hover {
-    background-color: #0056b3;
-}
-
-/* Table Styles */
-
-table {
-    width: 100%;
-    border-collapse: collapse;
-    margin-top: 20px;
-    font-size: 0.9em;
-}
-
-table, th, td {
-    border: 1px solid #ddd;
-    padding: 8px;
-}
-
-th {
-    background-color: #343a40;
-    color: #ffffff;
-}
-
-tr:nth-child(even) {
-    background-color: #f2f2f2;
-}
-
-tr:hover {
-    background-color: #e9ecef;
-}
-
-/* Encadre Style */
-
-.encadre {
-    background-color: #ffffff;
-    border: 2px solid #17a2b8;
-    padding: 20px;
-    border-radius: 8px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    text-align: center;
-    color: #495057;
-    max-width: 400px;
-    margin: 20px auto;
-}
-
-/* Réduit la largeur des colonnes sur mobile */
-@media (max-width: 768px) {
-    table {
-        width: 100%;
-        table-layout: fixed;
-    }
-
-    th, td {
-        display: none;
-        width: 100%;
-    }
-
-    /* Toujours afficher la colonne des heures */
-    .heure {
-        display: table-cell;
-        width: 25%;
-    }
-
-    /* Afficher seulement la colonne actuelle */
-    .current-day {
-        display: table-cell;
-        width: 75%;
-    }
-}
-
-/* Style de l'image en plein écran */
-.modal {
-    display: none;
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background-color: rgba(0, 0, 0, 0.8);
-    justify-content: center;
-    align-items: center;
-    z-index: 10;
-}
-
-.modal img {
-    max-width: 80%;
-    max-height: 80%;
-}
-
-.modal .close {
-    position: absolute;
-    top: 10px;
-    right: 10px;
-    font-size: 24px;
-    color: red;
-    background-color: white;
-    border-radius: 50%;
-    padding: 5px 10px;
-    cursor: pointer;
-}
-
-button {
-    background-color: #4CAF50; /* Green */
-    border: none;
-    color: white;
-    padding: 15px 32px;
-    text-align: center;
+.nav-links a {
+    color: #fff;
     text-decoration: none;
-    display: inline-block;
-    font-size: 16px;
-    margin: 4px 2px;
-    transition-duration: 0.4s;
-    cursor: pointer;
+    font-weight: 500;
+    padding: 8px 12px;
+    border-radius: 5px;
+    transition: background 0.3s ease;
 }
 
-button:hover {
-    background-color: white;
-    color: black;
-    border: 2px solid #4CAF50;
+.nav-links a:hover {
+    background: rgba(255, 255, 255, 0.2);
+}
+
+/* Hero Section */
+#hero {
+    background: linear-gradient(to bottom, #2575fc, #6a11cb);
+    color: #fff; /* Par défaut, tous les textes seront blancs */
+    text-align: center;
+    padding: 5rem 1rem;
+}
+
+#hero h1 {
+    font-size: 2.5rem;
+    margin-bottom: 1rem;
+}
+
+#hero p {
+    font-size: 1.2rem;
+    margin-bottom: 2rem;
+    color: #fff; /* Assure que le texte du paragraphe est blanc */
+}
+
+.cta-btn {
+    display: inline-block;
+    padding: 12px 25px;
+    background: #fff;
+    color: #2575fc;
+    font-size: 1rem;
+    font-weight: bold;
+    text-decoration: none;
+    border-radius: 50px;
+    transition: background 0.3s ease, transform 0.2s ease;
+}
+
+.cta-btn:hover {
+    background: #f0f0f0;
+    transform: translateY(-2px);
+}
+
+/* Sections */
+section {
+    padding: 3rem 1rem;
+    text-align: center;
+}
+
+section h2 {
+    margin-bottom: 1.5rem;
+    font-size: 2rem;
+    color: #2575fc;
+}
+
+section p {
+    margin-bottom: 2rem;
+    font-size: 1rem;
+    color: #555;
+}
+
+/* Services Section */
+.service-cards {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+    justify-content: center;
+}
+
+.card {
+    background: #fff;
+    padding: 1.5rem;
+    border-radius: 10px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    flex: 1 1 300px;
+    max-width: 300px;
+    text-align: left;
+    transition: transform 0.2s ease, box-shadow 0.3s ease;
+}
+
+.card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+}
+
+.card h3 {
+    font-size: 1.2rem;
+    margin-bottom: 1rem;
+    color: #333;
+}
+
+.card p {
+    font-size: 0.95rem;
+    color: #666;
+}
+
+/* Portfolio Section */
+.portfolio-grid {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+    justify-content: center;
+}
+
+.portfolio-item {
+    width: 300px;
+    border-radius: 10px;
+    overflow: hidden;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    background: #fff;
+}
+
+.portfolio-item img {
+    width: 100%;
+    display: block;
+    border-bottom: 4px solid #2575fc;
+}
+
+.portfolio-item p {
+    padding: 1rem;
+    font-size: 1rem;
+    text-align: center;
+    color: #333;
+}
+
+/* Contact Section */
+#contact-form {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+    max-width: 600px;
+    margin: 0 auto;
+}
+
+/* Uniformisation de la police pour les champs de formulaire */
+.form-group input,
+.form-group textarea {
+    font-family: 'Roboto', sans-serif; /* Même police */
+    font-size: 1rem; /* Même taille de texte */
+    color: #333; /* Même couleur */
+    width: 100%;
+    padding: 12px 15px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    outline: none;
+    transition: border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+.form-group input:focus,
+.form-group textarea:focus {
+    border-color: #2575fc;
+    box-shadow: 0 0 5px rgba(37, 117, 252, 0.3);
+}
+
+textarea {
+    resize: vertical;
+}
+
+button.cta-btn {
+    display: block;
+    width: 100%;
+    text-align: center;
+    background: #2575fc;
+    color: #fff;
+    border: none;
+    padding: 12px 20px;
+    font-size: 1rem;
+    font-weight: bold;
+    border-radius: 50px;
+    transition: background 0.3s ease, transform 0.2s ease;
+}
+
+button.cta-btn:hover {
+    background: #1d63c0;
+    transform: translateY(-2px);
+}
+
+/* Footer */
+footer {
+    background: #333;
+    color: #fff;
+    text-align: center;
+    padding: 1rem;
+    font-size: 0.9;
+}
+
+footer p {
+    margin: 0;
 }
